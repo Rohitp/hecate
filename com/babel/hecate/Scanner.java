@@ -124,6 +124,11 @@ public class Scanner {
                 }
                 break;
 
+            //No chars allowed. Only strings. Double quotes. Multi line. No escape characters. Why? Easiest to implement.    
+            case '"':
+                processString(lexeme);
+                break;
+
             default:
                 Hecate.errorHandler(line, "Unrecognised character "+c);
                 break;
@@ -147,6 +152,28 @@ public class Scanner {
          }
         return false; 
         
+    }
+
+    private void processString(String lexeme) {
+        while(ptr < code.length() && code.charAt(ptr) != '"' ) {
+            if(code.charAt(ptr) == '\n')
+                line++;
+            getNextChar();
+        }
+
+        // Reached end of string. No matching close quotes. 
+        if(ptr == code.length()) {
+            Hecate.errorHandler(line, "String literal isn't bounded by closing pair");
+            return;
+        }
+
+        getNextChar();
+
+
+        //removing quotes for the actual literal
+        String literal = code.substring(start + 1, ptr -1);
+        tokens.add(new Token(TokenEnum.STRING, lexeme, literal, line));
+
     }
 
 

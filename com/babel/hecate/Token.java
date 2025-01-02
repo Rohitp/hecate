@@ -19,7 +19,7 @@ public class Token {
     }
 
     public String toString() {
-        return "The lexeme is "+this.lexeme+" with Token "+this.type.toString();
+        return "The lexeme is "+this.lexeme+" with literal "+this.literal+" with Token "+this.type.toString()+" on line "+Integer.toString(lineNumber);
     }
 
 }
