@@ -138,7 +138,7 @@ public class Scanner {
     }
 
     private boolean isNextChar(char c) {
-        if(ptr > code.length()) 
+        if(ptr >= code.length()) 
             return false;
          if(code.charAt(ptr) == c) {
             //we need to ignore the next character since it's a part of the previous character

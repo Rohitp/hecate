@@ -5,10 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Hecate {
+
+    private static boolean debug = true;
 
     private static boolean error = false;
     public static void main(String args[]) throws IOException {
@@ -22,6 +28,8 @@ public class Hecate {
             // https://man.freebsd.org/cgi/man.cgi?query=sysexits&apropos=0&sektion=0&manpath=FreeBSD+4.3-RELEASE&format=html
             System.exit(64);
 
+        } else if(debug) {
+            parseFile("./com/babel/hecate/test.txt");
         } else if(args.length == 1) {
             parseFile(args[0]);
         } else {
@@ -33,8 +41,8 @@ public class Hecate {
     private static void parseFile(String path) throws IOException {
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            parseText(reader.lines().collect(Collectors.joining()));
+        
+            parseText(new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8));
             if(error) System.exit(65);
         } catch(FileNotFoundException fnf) {
             System.out.println("No such file "+path);
