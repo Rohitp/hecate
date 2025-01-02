@@ -18,6 +18,10 @@ public class Token {
         this.offset = 0;
     }
 
+    public String toString() {
+        return "The lexeme is "+this.lexeme+" with Token "+this.type.name();
+    }
+
 }
 
   
