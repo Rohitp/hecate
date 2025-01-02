@@ -37,7 +37,7 @@ public class Hecate {
             if(error) System.exit(65);
         } catch(FileNotFoundException fnf) {
             System.out.println("No such file "+path);
-        }
+        } 
 
     }
 
@@ -54,6 +54,8 @@ public class Hecate {
             String line = reader.readLine();
             if(line == null) break;
             parseText(line);
+
+            //Sets error a false here so the repl doesn't stop each time there is an error
             error = false;
         }
 
@@ -70,7 +72,7 @@ public class Hecate {
     // The main error handler for Hecate. Ideally this becomes an error interface. 
     // unsure of how much I want to lean into OOP and higher level abstractions here
     // (Specially ironic since Hecate is itself aspriing to be object oriented)
-    private static void errorHandler(int lineNumber, String errorMessage) {
+    public static void errorHandler(int lineNumber, String errorMessage) {
         reportError(lineNumber, " ", errorMessage);
     }
 

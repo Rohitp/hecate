@@ -10,12 +10,12 @@ public class Token {
     final int lineNumber;
     final int offset;
 
-    public Token(TokenEnum type, String lexeme, String literal, int lineNumber, int offset) {
+    public Token(TokenEnum type, String lexeme, String literal, int lineNumber) {
         this.type = type;
         this.lexeme = lexeme;
         this.literal = literal;
         this.lineNumber = lineNumber;
-        this.offset = offset;
+        this.offset = 0;
     }
 
 }
