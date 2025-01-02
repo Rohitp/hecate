@@ -33,6 +33,19 @@ public class Scanner {
         String lexeme = code.substring(start, ptr);
 
         switch(c) {
+
+
+            // Empty space. Just reset the start pointer for the lexemes up top and do nothing.
+            case ' ':
+            case '\t':
+            case '\r':
+                break;
+
+            // Newline. Increment the line count and start pointer.     
+            case '\n':
+                line++;
+                break;
+
             case '(':
                 tokens.add(new Token(TokenEnum.LEFT_BRACKET, lexeme, null, line));
                 break;
@@ -72,15 +85,45 @@ public class Scanner {
                 } else {
                     tokens.add(new Token(TokenEnum.NOT, lexeme, null, line));
                 }
-
+                break;
+              
+            case '<':
+                if(isNextChar('=')) {
+                    tokens.add(new Token(TokenEnum.LESSER_EQUAL, lexeme, null, line));
+                } else {
+                    tokens.add(new Token(TokenEnum.LESSER, lexeme, null, line));
+                }
                 break;
 
-                    
-            // case "<":
-            // case ">":
-            // case "=":    
+            case '>':
+                if(isNextChar('=')) {
+                    tokens.add(new Token(TokenEnum.GREATER_EQUAL, lexeme, null, line));
+                } else {
+                    tokens.add(new Token(TokenEnum.GREATER, lexeme, null, line));
+                }
+                break;
 
+            case '=': 
+                if(isNextChar('=')) {
+                    tokens.add(new Token(TokenEnum.EQUAL_EQUAL, lexeme, null, line));
+                } else {
+                    tokens.add(new Token(TokenEnum.EQUAL, lexeme, null, line));
+                }
+                break;  
             
+            // Figure out if it's division or comment. If it's a comment ignore the rest of the line. 
+            // Nested comments like /* */ with infinite levels are surprisingly tricky to do.      
+            case '/':
+                if(isNextChar('/')) {
+                    // Just ignore the rest of the line by using the next function to iterate
+                    while(ptr < code.length() && code.charAt(ptr) != '\n') {
+                        getNextChar();
+                    }
+                } else {
+                    tokens.add(new Token(TokenEnum.OBELUS, lexeme, null, line)); 
+                }
+                break;
+
             default:
                 Hecate.errorHandler(line, "Unrecognised character "+c);
                 break;
@@ -89,6 +132,7 @@ public class Scanner {
 
     }
 
+    //TODO: Make this a more generic function that serves to fetch the next char and ignores comment chars.
     private char getNextChar() {
         return code.charAt(ptr++);
     }
