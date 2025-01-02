@@ -9,9 +9,9 @@ public class Scanner {
 
     // Keeps a track of pointers when you scan them. This is at a lexeme level
     // Where start is the start and ptr is the current state of the lexeme.
-    private static int ptr = 0;
-    private static int start = 0;
-    private static int line =1;
+    private  int ptr = 0;
+    private  int start = 0;
+    private  int line = 1;
 
     Scanner(String code) {
         this.code = code;
@@ -64,6 +64,23 @@ public class Scanner {
             case ';':
                 tokens.add(new Token(TokenEnum.SEMICOLON, lexeme, null, line));
                 break;
+
+            //Going to match which need to have context specific grammar. Getting into type 1 grammar here. 
+            case '!':
+                if(isNextChar('=')) {
+                    tokens.add(new Token(TokenEnum.NOT_EQUAL, lexeme, null, line));
+                } else {
+                    tokens.add(new Token(TokenEnum.NOT, lexeme, null, line));
+                }
+
+                break;
+
+                    
+            // case "<":
+            // case ">":
+            // case "=":    
+
+            
             default:
                 Hecate.errorHandler(line, "Unrecognised character "+c);
                 break;
@@ -75,5 +92,19 @@ public class Scanner {
     private char getNextChar() {
         return code.charAt(ptr++);
     }
+
+    private boolean isNextChar(char c) {
+        if(ptr > code.length()) 
+            return false;
+         if(code.charAt(ptr) == c) {
+            //we need to ignore the next character since it's a part of the previous character
+            ptr++;
+            return true;
+         }
+        return false; 
+        
+    }
+
+
 
 }

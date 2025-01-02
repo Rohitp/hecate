@@ -19,7 +19,7 @@ public class Token {
     }
 
     public String toString() {
-        return "The lexeme is "+this.lexeme+" with Token "+this.type.name();
+        return "The lexeme is "+this.lexeme+" with Token "+this.type.toString();
     }
 
 }
