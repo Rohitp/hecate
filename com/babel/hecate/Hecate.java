@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Hecate {
@@ -62,11 +63,17 @@ public class Hecate {
     }
 
     // The main function which parses each line. Everything else is just a syntactic sugar over it    
-    private static void parseText(String line) {
-        String[] tokens = line.split(" ");
-        for(String token: tokens) {
+    private static void parseText(String code) {
+
+        Scanner scanner = new Scanner(code);
+        ArrayList<Token> tokens = scanner.getTokens();
+        for(Token token : tokens) {
             System.out.println(token);
         }
+        // String[] tokens = line.split(" ");
+        // for(String token: tokens) {
+        //     System.out.println(token);
+        // }
     }
 
     // The main error handler for Hecate. Ideally this becomes an error interface. 
