@@ -4,7 +4,7 @@ enum TokenEnum {
     // Foundations and base types
     // Okay, so the concept of NIETZSCHE as a specifier for null amuses me - the abyss looks back at you
     // Am I reinventing a billion dollar mistake? Seems fun. Let's see
-    TRUE, FALSE, NIETZSCHE, INT, DOUBLE, CHAR, STRING, VAR,
+    TRUE, FALSE, NIETZSCHE, INT, DOUBLE, CHAR, STRING, VAR, NUMBER,
 
     //Comparison
     GREATER, LESSER, EQUAL, NOT, NOT_EQUAL, GREATER_EQUAL, LESSER_EQUAL, EQUAL_EQUAL,

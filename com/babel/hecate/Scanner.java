@@ -127,10 +127,18 @@ public class Scanner {
             //No chars allowed. Only strings. Double quotes. Multi line. No escape characters. Why? Easiest to implement.    
             case '"':
                 processString();
-                break;
+                break; 
 
             default:
-                Hecate.errorHandler(line, "Unrecognised character "+c);
+                if(Character.isDigit(c)) {
+                   while(ptr < code.length() && Character.isDigit(code.charAt(ptr))) {
+                        getNextChar();
+                   } 
+                   processToken(TokenEnum.NUMBER, null);
+                } else {
+                    Hecate.errorHandler(line, "Unrecognised character "+c);
+                }
+                
                 break;
 
         }
