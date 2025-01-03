@@ -30,7 +30,7 @@ public class Scanner {
     // Scans each token 1 by 1
     private void scan() {
         char c = getNextChar();
-        String lexeme = code.substring(start, ptr);
+        
 
         switch(c) {
 
@@ -47,67 +47,67 @@ public class Scanner {
                 break;
 
             case '(':
-                tokens.add(new Token(TokenEnum.LEFT_BRACKET, lexeme, null, line));
+                processToken(TokenEnum.LEFT_BRACKET, null);
                 break;
             case ')':
-                tokens.add(new Token(TokenEnum.RIGHT_BRACKET, lexeme, null, line));
+                processToken(TokenEnum.RIGHT_BRACKET, null);
                 break;
             case '{':
-                tokens.add(new Token(TokenEnum.LEFT_BRACE, lexeme, null, line));
+                processToken(TokenEnum.LEFT_BRACE, null);
                 break;
             case '}':
-                tokens.add(new Token(TokenEnum.RIGHT_BRACE, lexeme, null, line));
+                processToken(TokenEnum.RIGHT_BRACE, null);
                 break;
             case '+':
-                tokens.add(new Token(TokenEnum.PLUS, lexeme, null, line));
+                processToken(TokenEnum.PLUS, null);
                 break;
             case '-':
-                tokens.add(new Token(TokenEnum.MINUS, lexeme, null, line));
+                processToken(TokenEnum.MINUS, null);
                 break;
             case '*':
-                tokens.add(new Token(TokenEnum.ASTERISK, lexeme, null, line));
+                processToken(TokenEnum.ASTERISK, null);
                 break;
             case ',':
-                tokens.add(new Token(TokenEnum.COMMA, lexeme, null, line));
+                processToken(TokenEnum.COMMA, null);
                 break;
             case '.':
-                tokens.add(new Token(TokenEnum.DOT, lexeme, null, line));
+                processToken(TokenEnum.DOT, null);
                 break;
             //The semicolon is weird. Do languages need semi colons? What about implicit insertion of semi colons? Not sure 
             case ';':
-                tokens.add(new Token(TokenEnum.SEMICOLON, lexeme, null, line));
+                processToken(TokenEnum.SEMICOLON, null);
                 break;
 
             //Going to match which need to have context specific grammar. Getting into type 1 grammar here. 
             case '!':
                 if(isNextChar('=')) {
-                    tokens.add(new Token(TokenEnum.NOT_EQUAL, lexeme, null, line));
+                    processToken(TokenEnum.NOT_EQUAL, null);
                 } else {
-                    tokens.add(new Token(TokenEnum.NOT, lexeme, null, line));
+                    processToken(TokenEnum.NOT, null);
                 }
                 break;
               
             case '<':
                 if(isNextChar('=')) {
-                    tokens.add(new Token(TokenEnum.LESSER_EQUAL, lexeme, null, line));
+                    processToken(TokenEnum.LESSER_EQUAL, null);
                 } else {
-                    tokens.add(new Token(TokenEnum.LESSER, lexeme, null, line));
+                    processToken(TokenEnum.LESSER, null);
                 }
                 break;
 
             case '>':
                 if(isNextChar('=')) {
-                    tokens.add(new Token(TokenEnum.GREATER_EQUAL, lexeme, null, line));
+                    processToken(TokenEnum.GREATER_EQUAL, null);
                 } else {
-                    tokens.add(new Token(TokenEnum.GREATER, lexeme, null, line));
+                    processToken(TokenEnum.GREATER, null);
                 }
                 break;
 
             case '=': 
                 if(isNextChar('=')) {
-                    tokens.add(new Token(TokenEnum.EQUAL_EQUAL, lexeme, null, line));
+                    processToken(TokenEnum.EQUAL_EQUAL, null);
                 } else {
-                    tokens.add(new Token(TokenEnum.EQUAL, lexeme, null, line));
+                    processToken(TokenEnum.EQUAL, null);
                 }
                 break;  
             
@@ -120,13 +120,13 @@ public class Scanner {
                         getNextChar();
                     }
                 } else {
-                    tokens.add(new Token(TokenEnum.OBELUS, lexeme, null, line)); 
+                    processToken(TokenEnum.OBELUS, null); 
                 }
                 break;
 
             //No chars allowed. Only strings. Double quotes. Multi line. No escape characters. Why? Easiest to implement.    
             case '"':
-                processString(lexeme);
+                processString();
                 break;
 
             default:
@@ -154,7 +154,7 @@ public class Scanner {
         
     }
 
-    private void processString(String lexeme) {
+    private void processString() {
         while(ptr < code.length() && code.charAt(ptr) != '"' ) {
             if(code.charAt(ptr) == '\n')
                 line++;
@@ -172,8 +172,14 @@ public class Scanner {
 
         //removing quotes for the actual literal
         String literal = code.substring(start + 1, ptr -1);
-        tokens.add(new Token(TokenEnum.STRING, lexeme, literal, line));
+        processToken(TokenEnum.STRING,literal);
 
+    }
+
+    // Helper methood to bind the cursor and the token, cleaner code and most iportantly seperating the two didnt make sense
+    private void processToken(TokenEnum type, String literal) {
+        String lexeme = code.substring(start, ptr); 
+        tokens.add(new Token(type, lexeme, literal, line));
     }
 
 
