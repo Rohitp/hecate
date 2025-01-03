@@ -15,6 +15,9 @@ enum TokenEnum {
     // OOP and abstraction here
     CLASS, FUNC, THIS, SUPER, RETURN,
 
+    // The two types of use defined words
+    IDENTIFIER, KEYWORD,
+
     // Other sundries
     // https://en.wikipedia.org/wiki/Obelus
     LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE, COMMA, DOT, 

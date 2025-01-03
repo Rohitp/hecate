@@ -1,5 +1,6 @@
 package com.babel.hecate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 //Scans a piece of source code. Takes lexemes and assigns it to tokens.
@@ -9,9 +10,10 @@ public class Scanner {
 
     // Keeps a track of pointers when you scan them. This is at a lexeme level
     // Where start is the start and ptr is the current state of the lexeme.
-    private  int ptr = 0;
-    private  int start = 0;
-    private  int line = 1;
+    private int ptr = 0;
+    private int start = 0;
+    private int line = 1;
+
 
     Scanner(String code) {
         this.code = code;
@@ -134,26 +136,9 @@ public class Scanner {
                 // Handling numbers here as we don't have intelligent switch cases here. 
                 // TODO: Segregate numbers into INT and Double.
                 if(Character.isDigit(c)) {
-                    
-                    //Flag to make sure we only consume the decimal point one - 123.456.78 is invalid.
-                    boolean seenDecimal = false;
-                   while(ptr < code.length() && (Character.isDigit(code.charAt(ptr)) || code.charAt(ptr) == '.') ) {
-                    
-                    // If the next digit after decimal isn't a number
-                    if( code.charAt(ptr) == '.' && !Character.isDigit(code.charAt(ptr + 1)) )
-                        break;
-                    // If the next digit after a decimal is a number but we've already consumed the decimal once    
-                    if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && seenDecimal )
-                        break;
-                    // First time consuming the decimal - set flag    
-                    if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && !seenDecimal ) {
-                        seenDecimal = true;
-                    } 
-
-                    getNextChar();
-
-                   } 
-                   processToken(TokenEnum.NUMBER, null);
+                    processNumber();
+                } else if(isAlphabet(c)) {
+                    processKeyword();
                 } else {
                     Hecate.errorHandler(line, "Unrecognised character "+c);
                 }
@@ -201,6 +186,67 @@ public class Scanner {
         String literal = code.substring(start + 1, ptr -1);
         processToken(TokenEnum.STRING,literal);
 
+    }
+
+    // Defining a custom method here. Character.isLetter is too permissive. We only want standard a-z and A-Z. 
+    // isLetter lets weird shit like ʰ pass through
+    private boolean isAlphabet(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c<= 'Z');
+    }
+
+    // We process all keywords here, if reserved we mark them as such with an enum. Otherwise they become user defined.
+    private void processKeyword() {
+
+        final HashMap<String, TokenEnum> identifiermap = new HashMap<String, TokenEnum>();
+
+        identifiermap.put("true", TokenEnum.TRUE);
+        identifiermap.put("false", TokenEnum.FALSE);
+        identifiermap.put("nietzsche", TokenEnum.NIETZSCHE);
+        identifiermap.put("null", TokenEnum.NIETZSCHE);
+        identifiermap.put("if", TokenEnum.IF);
+        identifiermap.put("else", TokenEnum.ELSE);
+        identifiermap.put("or", TokenEnum.OR);
+        identifiermap.put("and", TokenEnum.AND);
+        identifiermap.put("print", TokenEnum.PRINT);
+        identifiermap.put("func", TokenEnum.FUNC);
+        identifiermap.put("function", TokenEnum.FUNC);
+        identifiermap.put("while", TokenEnum.WHILE);
+        identifiermap.put("for", TokenEnum.FOR);
+        identifiermap.put("var", TokenEnum.VAR);
+
+        while(ptr < code.length() && ( isAlphabet(code.charAt(ptr)) || Character.isDigit(code.charAt(ptr)) ) ) {
+            getNextChar();
+        }
+
+        String identifier = code.substring(start, ptr);
+
+        // Deciding to make reserved keywords case sensitive here. 
+        TokenEnum type = (identifiermap.get(identifier) == null)? TokenEnum.IDENTIFIER : identifiermap.get(identifier);
+        processToken(type, identifier);
+
+
+    }
+
+    private void processNumber() {
+        //Flag to make sure we only consume the decimal point one - 123.456.78 is invalid.
+        boolean seenDecimal = false;
+        while(ptr < code.length() && (Character.isDigit(code.charAt(ptr)) || code.charAt(ptr) == '.') ) {
+        
+        // If the next digit after decimal isn't a number
+        if( code.charAt(ptr) == '.' && !Character.isDigit(code.charAt(ptr + 1)) )
+            break;
+        // If the next digit after a decimal is a number but we've already consumed the decimal once    
+        if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && seenDecimal )
+            break;
+        // First time consuming the decimal - set flag    
+        if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && !seenDecimal ) {
+            seenDecimal = true;
+        } 
+
+        getNextChar();
+
+        } 
+        processToken(TokenEnum.NUMBER, null);
     }
 
     // Helper methood to bind the cursor and the token, cleaner code and most iportantly seperating the two didnt make sense
