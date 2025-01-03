@@ -130,9 +130,28 @@ public class Scanner {
                 break; 
 
             default:
+
+                // Handling numbers here as we don't have intelligent switch cases here. 
+                // TODO: Segregate numbers into INT and Double.
                 if(Character.isDigit(c)) {
-                   while(ptr < code.length() && Character.isDigit(code.charAt(ptr))) {
-                        getNextChar();
+                    
+                    //Flag to make sure we only consume the decimal point one - 123.456.78 is invalid.
+                    boolean seenDecimal = false;
+                   while(ptr < code.length() && (Character.isDigit(code.charAt(ptr)) || code.charAt(ptr) == '.') ) {
+                    
+                    // If the next digit after decimal isn't a number
+                    if( code.charAt(ptr) == '.' && !Character.isDigit(code.charAt(ptr + 1)) )
+                        break;
+                    // If the next digit after a decimal is a number but we've already consumed the decimal once    
+                    if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && seenDecimal )
+                        break;
+                    // First time consuming the decimal - set flag    
+                    if(code.charAt(ptr) == '.' && Character.isDigit(code.charAt(ptr + 1)) && !seenDecimal ) {
+                        seenDecimal = true;
+                    } 
+
+                    getNextChar();
+
                    } 
                    processToken(TokenEnum.NUMBER, null);
                 } else {
