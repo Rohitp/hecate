@@ -24,7 +24,8 @@ public class Scanner {
             start = ptr;
             scan();
         }
-        tokens.add(new Token(TokenEnum.EOF, "", null, line));
+
+        tokens.add(new Token(TokenEnum.EOF, "", null, line, start));
         return tokens;
     }
 
@@ -137,7 +138,7 @@ public class Scanner {
                 // TODO: Segregate numbers into INT and Double.
                 if(Character.isDigit(c)) {
                     processNumber();
-                } else if(isAlphabet(c)) {
+                } else if(isVariableLegalAlphabet(c)) {
                     processKeyword();
                 } else {
                     Hecate.errorHandler(line, "Unrecognised character "+c);
@@ -190,8 +191,8 @@ public class Scanner {
 
     // Defining a custom method here. Character.isLetter is too permissive. We only want standard a-z and A-Z. 
     // isLetter lets weird shit like ʰ pass through
-    private boolean isAlphabet(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c<= 'Z');
+    private boolean isVariableLegalAlphabet(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c<= 'Z') || (c == '_');
     }
 
     // We process all keywords here, if reserved we mark them as such with an enum. Otherwise they become user defined.
@@ -214,7 +215,7 @@ public class Scanner {
         identifiermap.put("for", TokenEnum.FOR);
         identifiermap.put("var", TokenEnum.VAR);
 
-        while(ptr < code.length() && ( isAlphabet(code.charAt(ptr)) || Character.isDigit(code.charAt(ptr)) ) ) {
+        while(ptr < code.length() && ( isVariableLegalAlphabet(code.charAt(ptr)) || Character.isDigit(code.charAt(ptr)) ) ) {
             getNextChar();
         }
 
@@ -252,7 +253,7 @@ public class Scanner {
     // Helper methood to bind the cursor and the token, cleaner code and most iportantly seperating the two didnt make sense
     private void processToken(TokenEnum type, String literal) {
         String lexeme = code.substring(start, ptr); 
-        tokens.add(new Token(type, lexeme, literal, line));
+        tokens.add(new Token(type, lexeme, literal, line, start));
     }
 
 
