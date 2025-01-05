@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.babel.hecate.scanner.Scanner;
+import com.babel.hecate.scanner.Token;
+
 public class Hecate {
 
     private static boolean debug = true;
