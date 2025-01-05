@@ -6,6 +6,9 @@ abstract class Expression {
 
     interface Visitor<T> {
         T visit(BinaryExpression expression);
+        T visit(LiteralExpression expression);
+        T visit(UnaryExpression expression);
+        T visit(GroupExpression expression);
     }
 
     abstract <T> T accept(Visitor<T> visitor);

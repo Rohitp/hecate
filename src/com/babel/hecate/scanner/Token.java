@@ -4,7 +4,7 @@ package com.babel.hecate.scanner;
 // A line number and offset from the start of the file is stored 
 public class Token {
     final TokenEnum type;
-    final String lexeme;
+    public final String lexeme;
     final String literal;
     final int lineNumber;
     final int offset;

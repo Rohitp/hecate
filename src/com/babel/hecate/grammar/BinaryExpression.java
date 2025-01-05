@@ -16,7 +16,7 @@ public class BinaryExpression extends Expression {
 
     
     @Override
-    <T> T accept(Expression.Visitor<T> visitor) {
+    public <T> T accept(Expression.Visitor<T> visitor) {
         return visitor.visit(this);
     }
 }

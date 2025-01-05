@@ -1,6 +1,8 @@
 package com.babel.hecate.scanner;
 
-enum TokenEnum {
+
+//TODO: Made this public for testing. Remove the public modifier
+public enum TokenEnum {
     // Foundations and base types
     // Okay, so the concept of NIETZSCHE as a specifier for null amuses me - the abyss looks back at you
     // Am I reinventing a billion dollar mistake? Seems fun. Let's see
