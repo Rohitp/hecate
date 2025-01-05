@@ -29,7 +29,8 @@ public class Hecate {
             System.exit(64);
 
         } else if(debug) {
-            parseFile("./com/babel/hecate/test.txt");
+            // System.out.println("Working Directory = " + System.getProperty("user.dir"));
+            parseFile("./tests/test.txt");
         } else if(args.length == 1) {
             parseFile(args[0]);
         } else {

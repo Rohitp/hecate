@@ -1,2 +1,3 @@
 *.class
 com/babel/hecate/test.txt
+./bin/*

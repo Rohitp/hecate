@@ -10,3 +10,11 @@ Also this -> https://www.amazon.co.uk/Compilers-Principles-Techniques-Alfred-Aho
 The language is interpreted, object oriented, dynamic (because surprisingly static typing seems so much more difficult to implement).
 
 It's a regular language -> https://en.wikipedia.org/wiki/Regular_language, with null.
+
+
+
+Looking at expressions and scanning
+
+The interprettor pattern -> https://en.wikipedia.org/wiki/Interpreter_pattern
+And the visitor pattern.
+The BNF is also recommende reading -> https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form
