@@ -1,5 +1,6 @@
 package com.babel.hecate.parser;
 
+import com.babel.hecate.grammar.BinaryExpression;
 import com.babel.hecate.grammar.Expression;
 import com.babel.hecate.grammar.GroupExpression;
 import com.babel.hecate.grammar.LiteralExpression;
@@ -42,8 +43,13 @@ public class Parser {
     // Can potentially be infinitely long 
     // a == b == b == d and so on
     private Expression equals() {
-        // Expression expr = comparisson();
-        return comparisson();
+        Expression left = literal();
+        while(match(TokenEnum.EQUAL_EQUAL, TokenEnum.NOT_EQUAL)) {
+            Token operator = tokens.get(ptr -1);
+            Expression right = literal();
+            left = new BinaryExpression(left, operator, right);
+        }
+        return left;
     }
     
 
@@ -79,7 +85,7 @@ public class Parser {
         if(match(TokenEnum.NIETZSCHE))
             return new LiteralExpression(null);
         if(match(TokenEnum.NUMBER, TokenEnum.STRING))
-            return new LiteralExpression(tokens.get(ptr -1));
+            return new LiteralExpression(tokens.get(ptr -1).getLexeme());
         
         return null;
     }
@@ -87,11 +93,12 @@ public class Parser {
 
     private boolean match(TokenEnum ...tokentypes) {
 
-        for(TokenEnum tokentype : tokentypes) {
-            if(tokens.get(ptr).getType() == tokentype)  {
-                if(tokens.get(ptr).getType() != TokenEnum.EOF)
+        for(TokenEnum tokentype : tokentypes) {    
+            if(tokens.get(ptr).getType() != TokenEnum.EOF)  {
+                if(tokens.get(ptr).getType() == tokentype) {
                     ptr++;
-                return true;
+                    return true;
+                }
             }
                 
                 

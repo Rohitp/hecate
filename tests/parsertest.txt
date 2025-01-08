@@ -1,2 +1,1 @@
-true false 568
-hello
+true != false == 5
