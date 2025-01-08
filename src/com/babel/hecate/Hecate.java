@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.babel.hecate.grammar.PrettyPrint;
+import com.babel.hecate.parser.Parser;
 import com.babel.hecate.scanner.Scanner;
 import com.babel.hecate.scanner.Token;
 
@@ -30,7 +32,7 @@ public class Hecate {
 
         } else if(debug) {
             // System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            parseFile("./tests/test.txt");
+            parseFile("./tests/parsertest.txt");
         } else if(args.length == 1) {
             parseFile(args[0]);
         } else {
@@ -79,6 +81,9 @@ public class Hecate {
         for(Token token : tokens) {
             System.out.println(token);
         }
+
+        Parser parser = new Parser(tokens);
+        System.out.println(parser.formExpression().accept(new PrettyPrint()));
         // String[] tokens = line.split(" ");
         // for(String token: tokens) {
         //     System.out.println(token);

@@ -1,9 +1,10 @@
 package com.babel.hecate.parser;
 
 import com.babel.hecate.grammar.Expression;
+import com.babel.hecate.grammar.GroupExpression;
 import com.babel.hecate.grammar.LiteralExpression;
+import com.babel.hecate.grammar.UnaryExpression;
 
-import java.beans.Expression;
 import java.util.ArrayList;
 
 import com.babel.hecate.scanner.Token;
@@ -29,32 +30,42 @@ public class Parser {
     private final ArrayList<Token> tokens;
     private int ptr = 0;
 
-    Parser(ArrayList<Token> tokens) {
+    public Parser(ArrayList<Token> tokens) {
         this.tokens = tokens;
     }
 
 
+    public Expression formExpression() {
+        return equals();
+    }
+
     // Can potentially be infinitely long 
     // a == b == b == d and so on
     private Expression equals() {
-        Expression expr = comparisson();
+        // Expression expr = comparisson();
+        return comparisson();
     }
     
 
     private Expression comparisson() {
-        Expression expr = summations();
+        // Expression expr = summations();
+        return summations();
     }
 
     private Expression summations() {
-        Expression expr = multiplication();
+        // Expression expr = multiplication();
+        return multiplication();
     }
 
     private Expression multiplication() {
-        Expression expr = unary();
+        // Expression expr = unary();
+        return unary();
     }
 
     private Expression unary() {
-        Expression expr = literal();
+        // Expression expr = literal();
+
+        return literal();
     }
 
     // Literal can be true, false, string, number or Nietzsche
@@ -70,12 +81,22 @@ public class Parser {
         if(match(TokenEnum.NUMBER, TokenEnum.STRING))
             return new LiteralExpression(tokens.get(ptr -1));
         
-        
+        return null;
     }
 
 
-    private boolean match(TokenEnum ...token) {
-        return true;
+    private boolean match(TokenEnum ...tokentypes) {
+
+        for(TokenEnum tokentype : tokentypes) {
+            if(tokens.get(ptr).getType() == tokentype)  {
+                if(tokens.get(ptr).getType() != TokenEnum.EOF)
+                    ptr++;
+                return true;
+            }
+                
+                
+        }
+        return false;
     }
     
 }

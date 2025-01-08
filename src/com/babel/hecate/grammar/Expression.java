@@ -11,7 +11,7 @@ public abstract class Expression {
         T visit(GroupExpression expression);
     }
 
-    abstract <T> T accept(Visitor<T> visitor);
+    public abstract <T> T accept(Visitor<T> visitor);
 
 
     

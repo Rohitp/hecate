@@ -9,6 +9,26 @@ public class Token {
     final int lineNumber;
     final int offset;
 
+    public TokenEnum getType() {
+        return type;
+    }
+
+    public String getLexeme() {
+        return lexeme;
+    }
+
+    public String getLiteral() {
+        return literal;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
     public Token(TokenEnum type, String lexeme, String literal, int lineNumber, int offset) {
         this.type = type;
         this.lexeme = lexeme;
