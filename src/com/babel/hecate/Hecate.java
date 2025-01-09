@@ -1,5 +1,6 @@
 package com.babel.hecate;
 
+import com.babel.hecate.grammar.Expression;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,7 +84,8 @@ public class Hecate {
         }
 
         Parser parser = new Parser(tokens);
-        System.out.println(parser.formExpression().accept(new PrettyPrint()));
+        Expression exp = parser.formExpression();
+        System.out.println(exp.accept(new PrettyPrint()));
         // String[] tokens = line.split(" ");
         // for(String token: tokens) {
         //     System.out.println(token);

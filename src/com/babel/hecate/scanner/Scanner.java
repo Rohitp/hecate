@@ -78,7 +78,10 @@ public class Scanner {
             case '.':
                 processToken(TokenEnum.DOT, null);
                 break;
-            //The semicolon is weird. Do languages need semi colons? What about implicit insertion of semi colons? Not sure 
+            //The semicolon is weird. Do languages need semi colons? What about implicit insertion of semi colons? Not sure
+            // Much more difficult to handle semicolons within the realms of context free grammars. 
+            // Side note Javascripts semi colon insertion logic is insane 
+            // https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-automatic-semicolon-insertion 
             case ';':
                 processToken(TokenEnum.SEMICOLON, null);
                 break;
