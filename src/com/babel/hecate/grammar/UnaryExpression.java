@@ -7,6 +7,7 @@ public class UnaryExpression extends Expression {
     Token operator;
     Expression expression;
 
+
     public UnaryExpression(Token operator, Expression expression) {
         this.expression = expression;
         this.operator = operator;
@@ -17,5 +18,12 @@ public class UnaryExpression extends Expression {
         return visitor.visit(this);
     }
 
+    public Token getOperator() {
+        return operator;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
     
 }

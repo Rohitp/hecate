@@ -11,15 +11,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.babel.hecate.grammar.PrettyPrint;
+import com.babel.hecate.interpreter.Interpreter;
+import com.babel.hecate.interpreter.InterpreterError;
 import com.babel.hecate.parser.Parser;
 import com.babel.hecate.scanner.Scanner;
 import com.babel.hecate.scanner.Token;
 
+//TODO: Fix case where scanner fails for empty files 
+// And parsr fails for files with only comments
 public class Hecate {
 
     private static boolean debug = true;
 
     private static boolean error = false;
+    // Seperating parsing/ scanning error and runtime errors
+    private static boolean runtimeError = false;
     public static void main(String args[]) throws IOException {
 
         // If 1 argument assume it's a file that we need to tokensie and parse
@@ -48,6 +54,8 @@ public class Hecate {
         
             parseText(new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8));
             if(error) System.exit(65);
+            if(runtimeError) System.exit(70);
+
         } catch(FileNotFoundException fnf) {
             System.out.println("No such file "+path);
         } 
@@ -88,10 +96,11 @@ public class Hecate {
         if(error)
             return;
         System.out.println(exp.accept(new PrettyPrint()));
-        // String[] tokens = line.split(" ");
-        // for(String token: tokens) {
-        //     System.out.println(token);
-        // }
+
+        Interpreter interpreter = new Interpreter();
+        System.out.println(exp.accept(interpreter).toString());
+
+        
     }
 
     // The main error handler for Hecate. Ideally this becomes an error interface. 
@@ -105,6 +114,11 @@ public class Hecate {
     public static void errorHandler(Token token, String errorMessage) {
         reportError(token.getLineNumber(), " ", errorMessage);
     }
+
+    public static void runtimeError(InterpreterError error) {
+        System.err.println(error.getMessage() +"\n[line " + error.token.getLineNumber() + "]");
+        runtimeError = true;
+      }
 
 
     // The theory is that the reporting aspect of errors are seperate from the actual errors. 
