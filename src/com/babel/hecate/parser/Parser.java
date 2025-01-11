@@ -1,5 +1,6 @@
 package com.babel.hecate.parser;
 
+import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.BinaryExpression;
 import com.babel.hecate.grammar.Expression;
 import com.babel.hecate.grammar.GroupExpression;
@@ -93,13 +94,13 @@ public class Parser {
 
     // These return unary expressions
     private Expression unary() {
-        Expression expr = literal();
+        // Expression expr = literal();
         while(match(TokenEnum.NOT, TokenEnum.MINUS)) {
             Token operator = tokens.get(ptr -1);
             Expression right = literal();
-            expr = new UnaryExpression(operator, right);
+            return new UnaryExpression(operator, right);
         }
-        return expr;
+        return literal();
     }
 
     // Literal can be true, false, string, number or Nietzsche
@@ -121,6 +122,8 @@ public class Parser {
         if(match(TokenEnum.LEFT_BRACKET)) {
             Expression group = formExpression();
 
+
+            // Need to figure out the error interface. We synchronise here?
             if(tokens.get(ptr).getType() == TokenEnum.EOF) {
                 System.out.println("Missing right brace");
             }
@@ -132,7 +135,9 @@ public class Parser {
         }
         
 
-        return new LiteralExpression("NA");
+        // I need to figure out how to fix the unary stack. This will definitely come back to bite me.
+        // return new LiteralExpression("NA");
+        throw parserError(tokens.get(ptr), "UNexpected parsing error");
     }
 
 
@@ -149,6 +154,11 @@ public class Parser {
                 
         }
         return false;
+    }
+
+    private ParserError parserError(Token token, String message) {
+        Hecate.errorHandler(token, "Error at token "+token.getLexeme());
+        return new ParserError();
     }
     
 }

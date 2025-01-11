@@ -79,9 +79,10 @@ public class Scanner {
                 processToken(TokenEnum.DOT, null);
                 break;
             //The semicolon is weird. Do languages need semi colons? What about implicit insertion of semi colons? Not sure
-            // Much more difficult to handle semicolons within the realms of context free grammars. 
+            // Much more difficult to handle semicolons within the realms of context free grammars. - How do I know where a line ends without store context
             // Side note Javascripts semi colon insertion logic is insane 
-            // https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-automatic-semicolon-insertion 
+            // https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-automatic-semicolon-insertion
+            // Also without a semi colon the context becomes incrdibly difficult to synchronise when we hit an error condition
             case ';':
                 processToken(TokenEnum.SEMICOLON, null);
                 break;

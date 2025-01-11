@@ -85,6 +85,8 @@ public class Hecate {
 
         Parser parser = new Parser(tokens);
         Expression exp = parser.formExpression();
+        if(error)
+            return;
         System.out.println(exp.accept(new PrettyPrint()));
         // String[] tokens = line.split(" ");
         // for(String token: tokens) {
@@ -97,6 +99,11 @@ public class Hecate {
     // (Specially ironic since Hecate is itself aspriing to be object oriented)
     public static void errorHandler(int lineNumber, String errorMessage) {
         reportError(lineNumber, " ", errorMessage);
+    }
+
+    // Error  handler for the parser
+    public static void errorHandler(Token token, String errorMessage) {
+        reportError(token.getLineNumber(), " ", errorMessage);
     }
 
 
