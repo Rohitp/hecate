@@ -1,10 +1,10 @@
 package tests;
 
-import com.babel.hecate.grammar.BinaryExpression;
-import com.babel.hecate.grammar.GroupExpression;
-import com.babel.hecate.grammar.LiteralExpression;
-import com.babel.hecate.grammar.PrettyPrint;
-import com.babel.hecate.grammar.UnaryExpression;
+import com.babel.hecate.grammar.expressions.BinaryExpression;
+import com.babel.hecate.grammar.expressions.GroupExpression;
+import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.PrettyPrint;
+import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.scanner.Token;
 import com.babel.hecate.scanner.TokenEnum;
 

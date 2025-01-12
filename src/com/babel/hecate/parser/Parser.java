@@ -1,11 +1,11 @@
 package com.babel.hecate.parser;
 
 import com.babel.hecate.Hecate;
-import com.babel.hecate.grammar.BinaryExpression;
-import com.babel.hecate.grammar.Expression;
-import com.babel.hecate.grammar.GroupExpression;
-import com.babel.hecate.grammar.LiteralExpression;
-import com.babel.hecate.grammar.UnaryExpression;
+import com.babel.hecate.grammar.expressions.BinaryExpression;
+import com.babel.hecate.grammar.expressions.Expression;
+import com.babel.hecate.grammar.expressions.GroupExpression;
+import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.UnaryExpression;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,5 @@
 package com.babel.hecate;
 
-import com.babel.hecate.grammar.Expression;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,7 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.babel.hecate.grammar.PrettyPrint;
+import com.babel.hecate.grammar.expressions.Expression;
+import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.interpreter.Interpreter;
 import com.babel.hecate.interpreter.InterpreterError;
 import com.babel.hecate.parser.Parser;

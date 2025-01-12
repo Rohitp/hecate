@@ -1,4 +1,4 @@
-package com.babel.hecate.grammar;
+package com.babel.hecate.grammar.expressions;
 
 public class PrettyPrint implements Expression.Visitor<String> {
 

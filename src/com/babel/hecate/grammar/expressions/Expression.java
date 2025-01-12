@@ -1,4 +1,4 @@
-package com.babel.hecate.grammar;
+package com.babel.hecate.grammar.expressions;
 
 
 // We eventually add a visitor for each expression here. Plus the holder for accepting the visitor
