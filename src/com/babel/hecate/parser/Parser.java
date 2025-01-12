@@ -6,6 +6,9 @@ import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
+import com.babel.hecate.grammar.statements.ExpressionStatement;
+import com.babel.hecate.grammar.statements.HecateStatement;
+import com.babel.hecate.grammar.statements.PrintStatement;
 
 import java.util.ArrayList;
 
@@ -37,6 +40,15 @@ public class Parser {
 
     public Parser(ArrayList<Token> tokens) {
         this.tokens = tokens;
+    }
+
+
+    public ArrayList<HecateStatement> parse() {
+        ArrayList<HecateStatement> statements = new ArrayList<>();
+        while(tokens.get(ptr).getType() != TokenEnum.EOF) {
+            statements.add(processStatement());
+        }
+        return statements;
     }
 
 
@@ -144,6 +156,44 @@ public class Parser {
         throw parserError(tokens.get(ptr), "UNexpected parsing error");
     }
 
+
+
+    // Statements for a hierarchy similair to expressions
+    // For example PRINT 5 + 8 needs to evaluate the RHS expression before coming back
+    private HecateStatement processStatement() {
+        if(match(TokenEnum.PRINT)) {
+            return printStatement();
+        } 
+
+        return expressionStatement();
+    }
+
+    private HecateStatement printStatement() {
+        HecateExpression expr = formExpression();
+        iterate(TokenEnum.SEMICOLON, "Expected ; at the end of statement");
+        return new PrintStatement(expr);
+    }
+
+    private HecateStatement expressionStatement() {
+        HecateExpression expr = formExpression();
+        iterate(TokenEnum.SEMICOLON, "Expected ; at the end of statement");
+        return new ExpressionStatement(expr);
+    }
+
+
+
+    private Token iterate(TokenEnum type, String error) {
+
+        if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() == type) {
+            ptr++;
+            return tokens.get(ptr -1);
+        }
+
+        throw parserError(tokens.get(ptr), error);
+        
+    }
+
+    
 
     private boolean match(TokenEnum ...tokentypes) {
 

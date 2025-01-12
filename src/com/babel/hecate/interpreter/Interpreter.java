@@ -1,12 +1,17 @@
 package com.babel.hecate.interpreter;
+import java.util.ArrayList;
+
 import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
+import com.babel.hecate.grammar.statements.ExpressionStatement;
+import com.babel.hecate.grammar.statements.HecateStatement;
+import com.babel.hecate.grammar.statements.PrintStatement;
 
-public class Interpreter implements HecateExpression.Visitor<Object> {
+public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
     
 
     public Object interpret(HecateExpression expr) {
@@ -14,10 +19,25 @@ public class Interpreter implements HecateExpression.Visitor<Object> {
         try {
             result = expr.accept(this);
         } catch(InterpreterError error) {
-            Hecate.runtimeError(error);
+            Hecate.interpreterError(error);
         }
 
         return result;
+    }
+
+    // Naming is hard. Close to impossible
+    public void executestatements(ArrayList<HecateStatement> statements) {
+
+        try {
+
+            for(HecateStatement statement: statements) {
+                statement.accept(this);
+            }
+
+        } catch(InterpreterError error) {
+            Hecate.interpreterError(error);
+        }
+
     }
 
     @Override
@@ -119,6 +139,19 @@ public class Interpreter implements HecateExpression.Visitor<Object> {
         if(obj instanceof Integer && ((int)obj == 0))
             return false;
         return true;    
+    }
+
+    @Override
+    public Integer visit(PrintStatement ps) {
+        Object result = interpret(ps.getExpression());
+        System.out.println(result.toString());
+        return 0;
+    }
+
+    @Override
+    public Integer visit(ExpressionStatement es) {
+        interpret(es.getHe());
+        return 0;
     }
 
 

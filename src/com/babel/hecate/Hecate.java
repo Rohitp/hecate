@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
+import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.interpreter.Interpreter;
 import com.babel.hecate.interpreter.InterpreterError;
 import com.babel.hecate.parser.Parser;
@@ -38,8 +39,8 @@ public class Hecate {
             System.exit(64);
 
         } else if(debug) {
-            // System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            parseFile("./tests/parsertest.txt");
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+            parseFile("../tests/parsertest.txt");
         } else if(args.length == 1) {
             parseFile(args[0]);
         } else {
@@ -92,13 +93,16 @@ public class Hecate {
         }
 
         Parser parser = new Parser(tokens);
-        HecateExpression exp = parser.formExpression();
+        // HecateExpression exp = parser.formExpression();
         if(error)
             return;
-        System.out.println(exp.accept(new PrettyPrint()));
+        // System.out.println(exp.accept(new PrettyPrint()));
 
         Interpreter interpreter = new Interpreter();
-        System.out.println(interpreter.interpret(exp).toString());
+        // System.out.println(interpreter.interpret(exp).toString());
+        ArrayList<HecateStatement> statements = parser.parse();
+        interpreter.executestatements(statements);
+        
 
         
     }
@@ -115,7 +119,7 @@ public class Hecate {
         reportError(token.getLineNumber(), " ", errorMessage);
     }
 
-    public static void runtimeError(InterpreterError error) {
+    public static void interpreterError(InterpreterError error) {
         System.err.println(error.getMessage() +"\n[line " + error.token.getLineNumber() + "]");
         runtimeError = true;
       }
