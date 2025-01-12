@@ -5,17 +5,19 @@ import com.babel.hecate.grammar.Expression;
 import com.babel.hecate.grammar.GroupExpression;
 import com.babel.hecate.grammar.LiteralExpression;
 import com.babel.hecate.grammar.UnaryExpression;
-import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements Expression.Visitor<Object> {
     
 
-    public void interpret(Expression expr) {
+    public Object interpret(Expression expr) {
+        Object result = 0;
         try {
-            expr.accept(this);
+            result = expr.accept(this);
         } catch(InterpreterError error) {
             Hecate.runtimeError(error);
         }
+
+        return result;
     }
 
     @Override

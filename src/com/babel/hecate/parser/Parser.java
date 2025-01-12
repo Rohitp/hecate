@@ -115,7 +115,7 @@ public class Parser {
         if(match(TokenEnum.NIETZSCHE))
             return new LiteralExpression(null);
         if(match(TokenEnum.NUMBER, TokenEnum.STRING, TokenEnum.IDENTIFIER))
-            return new LiteralExpression(tokens.get(ptr -1).getLexeme());
+            return new LiteralExpression(tokens.get(ptr -1).getLiteral());
 
 
         // Parse and match griup expressions    

@@ -259,7 +259,14 @@ public class Scanner {
     // Helper methood to bind the cursor and the token, cleaner code and most iportantly seperating the two didnt make sense
     private void processToken(TokenEnum type, String literal) {
         String lexeme = code.substring(start, ptr); 
-        tokens.add(new Token(type, lexeme, literal, line, start));
+        if(literal == null) {
+            literal = lexeme;
+        }
+        if(type == TokenEnum.NUMBER) {
+            tokens.add(new Token(type, lexeme, Double.parseDouble(literal), line, start));
+        } else {
+            tokens.add(new Token(type, lexeme, literal, line, start));
+        }
     }
 
 

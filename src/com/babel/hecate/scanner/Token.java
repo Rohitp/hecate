@@ -5,7 +5,7 @@ package com.babel.hecate.scanner;
 public class Token {
     final TokenEnum type;
     public final String lexeme;
-    final String literal;
+    final Object literal;
     final int lineNumber;
     final int offset;
 
@@ -17,7 +17,7 @@ public class Token {
         return lexeme;
     }
 
-    public String getLiteral() {
+    public Object getLiteral() {
         return literal;
     }
 
@@ -29,7 +29,7 @@ public class Token {
         return offset;
     }
 
-    public Token(TokenEnum type, String lexeme, String literal, int lineNumber, int offset) {
+    public Token(TokenEnum type, String lexeme, Object literal, int lineNumber, int offset) {
         this.type = type;
         this.lexeme = lexeme;
         this.literal = literal;

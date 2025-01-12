@@ -98,7 +98,7 @@ public class Hecate {
         System.out.println(exp.accept(new PrettyPrint()));
 
         Interpreter interpreter = new Interpreter();
-        System.out.println(exp.accept(interpreter).toString());
+        System.out.println(interpreter.interpret(exp).toString());
 
         
     }
