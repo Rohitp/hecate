@@ -1,6 +1,6 @@
 package com.babel.hecate.grammar.expressions;
 
-public class LiteralExpression extends Expression {
+public class LiteralExpression extends HecateExpression {
 
     Object literal;
 

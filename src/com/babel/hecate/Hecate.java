@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.babel.hecate.grammar.expressions.Expression;
+import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.interpreter.Interpreter;
 import com.babel.hecate.interpreter.InterpreterError;
@@ -92,7 +92,7 @@ public class Hecate {
         }
 
         Parser parser = new Parser(tokens);
-        Expression exp = parser.formExpression();
+        HecateExpression exp = parser.formExpression();
         if(error)
             return;
         System.out.println(exp.accept(new PrettyPrint()));

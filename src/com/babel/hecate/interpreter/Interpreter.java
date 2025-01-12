@@ -1,15 +1,15 @@
 package com.babel.hecate.interpreter;
 import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
-import com.babel.hecate.grammar.expressions.Expression;
+import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 
-public class Interpreter implements Expression.Visitor<Object> {
+public class Interpreter implements HecateExpression.Visitor<Object> {
     
 
-    public Object interpret(Expression expr) {
+    public Object interpret(HecateExpression expr) {
         Object result = 0;
         try {
             result = expr.accept(this);

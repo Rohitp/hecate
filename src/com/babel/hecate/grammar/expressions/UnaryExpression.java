@@ -2,13 +2,13 @@ package com.babel.hecate.grammar.expressions;
 
 import com.babel.hecate.scanner.Token;
 
-public class UnaryExpression extends Expression {
+public class UnaryExpression extends HecateExpression {
 
     Token operator;
-    Expression expression;
+    HecateExpression expression;
 
 
-    public UnaryExpression(Token operator, Expression expression) {
+    public UnaryExpression(Token operator, HecateExpression expression) {
         this.expression = expression;
         this.operator = operator;
     }
@@ -22,7 +22,7 @@ public class UnaryExpression extends Expression {
         return operator;
     }
 
-    public Expression getExpression() {
+    public HecateExpression getExpression() {
         return expression;
     }
     

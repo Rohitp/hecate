@@ -1,6 +1,6 @@
 package com.babel.hecate.grammar.expressions;
 
-public class PrettyPrint implements Expression.Visitor<String> {
+public class PrettyPrint implements HecateExpression.Visitor<String> {
 
     @Override
     public String visit(BinaryExpression be) {
@@ -24,11 +24,11 @@ public class PrettyPrint implements Expression.Visitor<String> {
         return le.literal.toString();
     }
 
-    private String process(String name, Expression ...exprs) {
+    private String process(String name, HecateExpression ...exprs) {
         StringBuilder print = new StringBuilder();
         print.append("( "+name+" ");
 
-        for(Expression e : exprs) {
+        for(HecateExpression e : exprs) {
             print.append(e.accept(this));
             print.append(" ");
         }

@@ -1,12 +1,12 @@
 package com.babel.hecate.grammar.expressions;
 
-public class GroupExpression extends Expression {
+public class GroupExpression extends HecateExpression {
 
    
 
-    Expression expression;
+    HecateExpression expression;
 
-    public GroupExpression(Expression expression) {
+    public GroupExpression(HecateExpression expression) {
         this.expression = expression;
     }
 
@@ -15,7 +15,7 @@ public class GroupExpression extends Expression {
         return visitor.visit(this);
     }
 
-    public Expression getExpression() {
+    public HecateExpression getExpression() {
         return expression;
     }
 
