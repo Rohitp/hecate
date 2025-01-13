@@ -132,7 +132,7 @@ public class Parser {
             return new LiteralExpression(false);
         if(match(TokenEnum.NIETZSCHE))
             return new LiteralExpression(null);
-        if(match(TokenEnum.NUMBER, TokenEnum.STRING, TokenEnum.IDENTIFIER))
+        if(match(TokenEnum.NUMBER, TokenEnum.STRING))
             return new LiteralExpression(tokens.get(ptr -1).getLiteral());
         if(match(TokenEnum.IDENTIFIER))
             return new VariableExpression(tokens.get(ptr -1));
@@ -203,6 +203,7 @@ public class Parser {
 
     private HecateStatement printStatement() {
         HecateExpression expr = formExpression();
+
         iterate(TokenEnum.SEMICOLON, "Expected ; at the end of statement");
         return new PrintStatement(expr);
     }

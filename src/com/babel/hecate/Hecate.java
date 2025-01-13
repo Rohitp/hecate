@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.statements.HecateStatement;
+import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.interpreter.Interpreter;
 import com.babel.hecate.interpreter.InterpreterError;
 import com.babel.hecate.parser.Parser;
@@ -88,9 +89,9 @@ public class Hecate {
 
         Scanner scanner = new Scanner(code);
         ArrayList<Token> tokens = scanner.getTokens();
-        for(Token token : tokens) {
-            System.out.println(token);
-        }
+        // for(Token token : tokens) {
+        //     System.out.println(token);
+        // }
 
         Parser parser = new Parser(tokens);
         // HecateExpression exp = parser.formExpression();

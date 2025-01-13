@@ -7,6 +7,7 @@ import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
