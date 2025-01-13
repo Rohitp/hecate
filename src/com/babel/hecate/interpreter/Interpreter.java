@@ -2,17 +2,22 @@ package com.babel.hecate.interpreter;
 import java.util.ArrayList;
 
 import com.babel.hecate.Hecate;
+import com.babel.hecate.Variables;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
+import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
+import com.babel.hecate.grammar.statements.VariableStatement;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
     
+
+    private Variables variables = new Variables();
 
     public Object interpret(HecateExpression expr) {
         Object result = 0;
@@ -124,9 +129,13 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
             default:
                 throw new InterpreterError(be.getOperator(), "Unspecified operand for calculation");
         }
-
-
         
+    }
+
+
+    @Override
+    public Object visit(VariableExpression ve) {
+        return variables.get(ve.getName());
     }
 
 
@@ -153,6 +162,17 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         interpret(es.getHe());
         return 0;
     }
+
+
+    // Variables that are uninitialised are 42 by default
+    // https://hitchhikers.fandom.com/wiki/42
+    @Override
+    public Integer visit(VariableStatement vs) {
+        Object value = vs.getExpression() == null? 42 : interpret(vs.getExpression());
+        variables.declare(vs.getVariablename().getLexeme(), value);
+        return 0;
+    }
+
 
 
 }

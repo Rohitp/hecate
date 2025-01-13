@@ -8,6 +8,7 @@ public abstract class HecateStatement {
     public interface Visitor<T> {
         T visit(PrintStatement ps);
         T visit(ExpressionStatement es);
+        T visit(VariableStatement vs);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

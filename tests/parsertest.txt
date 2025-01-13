@@ -1,6 +1,9 @@
-print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);
-print 7 + 17;
-print "hello";
+var a = 5;
+print a;
+
+//print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);
+//print 7 + 17;
+//print "hello";
 
 
 //5 == 7

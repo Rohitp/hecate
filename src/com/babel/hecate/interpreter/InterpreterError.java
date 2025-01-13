@@ -7,7 +7,7 @@ public class InterpreterError extends RuntimeException {
 
 
     // Java's runtime exception takes a message we pass on to the stack.
-    InterpreterError(Token token, String message) {
+    public InterpreterError(Token token, String message) {
         super(message);
         this.token = token;
     }

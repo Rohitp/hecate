@@ -6,9 +6,11 @@ import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
+import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
+import com.babel.hecate.grammar.statements.VariableStatement;
 
 import java.util.ArrayList;
 
@@ -132,6 +134,8 @@ public class Parser {
             return new LiteralExpression(null);
         if(match(TokenEnum.NUMBER, TokenEnum.STRING, TokenEnum.IDENTIFIER))
             return new LiteralExpression(tokens.get(ptr -1).getLiteral());
+        if(match(TokenEnum.IDENTIFIER))
+            return new VariableExpression(tokens.get(ptr -1));
 
 
         // Parse and match griup expressions    
@@ -161,6 +165,35 @@ public class Parser {
     // Statements for a hierarchy similair to expressions
     // For example PRINT 5 + 8 needs to evaluate the RHS expression before coming back
     private HecateStatement processStatement() {
+
+        try {
+            if(match(TokenEnum.VAR)) {
+                return declarations();
+            }
+            return nondeclarations(); 
+        } catch(ParserError pe) {
+            dontpanic();
+            return null;
+        }
+    }
+
+    private HecateStatement declarations() {
+        try {
+            Token varname = iterate(TokenEnum.IDENTIFIER, "Expected variable name - name your variables");
+            HecateExpression expr = null;
+            if(match(TokenEnum.EQUAL)) {
+                expr = formExpression();
+            }
+
+            iterate(TokenEnum.SEMICOLON, "Expected ; at the end of statement");
+            return new VariableStatement(varname, expr);
+        } catch (ParserError pe) {
+            dontpanic();
+            return null;
+        }
+    }
+
+    private HecateStatement nondeclarations() {
         if(match(TokenEnum.PRINT)) {
             return printStatement();
         } 
@@ -184,17 +217,22 @@ public class Parser {
 
     private Token iterate(TokenEnum type, String error) {
 
-        if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() == type) {
-            ptr++;
-            return tokens.get(ptr -1);
-        }
+        try {
+            if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() == type) {
+                ptr++;
+                return tokens.get(ptr -1);
+            }
 
-        throw parserError(tokens.get(ptr), error);
+            throw parserError(tokens.get(ptr), error);
+        } catch(ParserError pe) {
+            throw new ParserError(tokens.get(ptr), error);
+        }
         
     }
 
     
 
+    // Matches a token type and gets to the next step if not end. The main ticking clock of the program
     private boolean match(TokenEnum ...tokentypes) {
 
         for(TokenEnum tokentype : tokentypes) {    
@@ -212,7 +250,39 @@ public class Parser {
 
     private ParserError parserError(Token token, String message) {
         Hecate.errorHandler(token, "Error at token "+token.getLexeme());
-        return new ParserError();
+        ParserError pe = new ParserError(token, message);
+        throw pe;
+    }
+
+
+    // Gets us to the next statement if we start panicking over an error
+    private void dontpanic() {
+
+        if(tokens.get(ptr).getType() != TokenEnum.EOF) {
+            ptr++;
+        }
+
+        while(tokens.get(ptr).getType() != TokenEnum.EOF) {
+
+            if(tokens.get(ptr -1).getType() == TokenEnum.SEMICOLON) return;
+
+            switch(tokens.get(ptr).getType()) {
+                case VAR:
+                case IF:
+                case ELSE:
+                case FOR:
+                case WHILE:
+                case FUNC:
+                case PRINT:
+                    return;
+                default:
+                    assert true;
+            }
+
+            if(tokens.get(ptr).getType() != TokenEnum.EOF) {
+                ptr++;
+            }
+        }
     }
     
 }

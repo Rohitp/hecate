@@ -4,7 +4,7 @@ SRC="./src"
 OUT="./bin"
 JAR_NAME="hecate.jar"
 MAIN_CLASS="com.babel.hecate.Hecate"
-
+PARSE_FILE_NAME="./tests/parsertest.txt"
 
 echo "Removing old binary files in ${OUT}/*"
 rm -rf "${OUT}"/*
@@ -30,7 +30,7 @@ echo "Generated artifact ${JAR_NAME} in ${OUT}"
 
 echo "Running artifact"
 
-java -jar "${OUT}/${JAR_NAME}"
+java -jar "${OUT}/${JAR_NAME}" "${PARSE_FILE_NAME}"
 
 if [[ $? -ne 0 ]]; then
     echo "Failed to run the jar file!"

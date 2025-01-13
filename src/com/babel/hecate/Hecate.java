@@ -38,11 +38,11 @@ public class Hecate {
             // https://man.freebsd.org/cgi/man.cgi?query=sysexits&apropos=0&sektion=0&manpath=FreeBSD+4.3-RELEASE&format=html
             System.exit(64);
 
+        } else if(args.length == 1) {
+            parseFile(args[0]);
         } else if(debug) {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
             parseFile("../tests/parsertest.txt");
-        } else if(args.length == 1) {
-            parseFile(args[0]);
         } else {
             promptLoop();
         }
