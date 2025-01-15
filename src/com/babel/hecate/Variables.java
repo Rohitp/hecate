@@ -17,14 +17,59 @@ import com.babel.hecate.scanner.Token;
 
 public class Variables {
 
+
+    // A scope one level deeper than the current one
+    // var x = 10;
+    // print x
+    // {
+    //     var x = "hello"
+    //     print x
+    // }
+    // print x
+    // 10
+    // "hello"
+    // 10
+    // So we keep a track of where we're in, going from innermost to outermost
+
+    final Variables innerscope;
     private final HashMap<String, Object> variables = new HashMap<>();
 
 
+
+    // We set two constructors here
+    // If variables is initalised without anything, it's the default global scope
+    // If variables is initalised within itself, we treat it as an inner scope
+    // This recurison should let us nest variables
+    public Variables() {
+        this.innerscope = null;
+    }
+
+    public Variables(Variables scope) {
+        this.innerscope = scope;
+    }
+
+    // Default scope declaration
     public void declare(String name, Object value) {
         variables.put(name, value);
     }
 
+
+    // Assign makes sure the variable is declared before setting value
+    public void assign(Token var, Object value) {
+
+        if(innerscope != null) {
+            innerscope.assign(var, value);
+        } else if(variables.containsKey(var.getLexeme())) {
+            variables.put(var.getLexeme(), value);
+        }
+        throw new InterpreterError(var, "Vairable "+var.getLexeme()+"not initialised");
+    }
+
     public Object get(Token key) {
+        if(innerscope != null && innerscope.variables.containsKey(key.getLexeme())) {
+            return innerscope.variables.get(key.lexeme);
+        }
+
         if(variables.containsKey(key.lexeme)) {
             return variables.get(key.lexeme);
         }

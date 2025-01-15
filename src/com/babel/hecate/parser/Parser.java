@@ -1,6 +1,7 @@
 package com.babel.hecate.parser;
 
 import com.babel.hecate.Hecate;
+import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
@@ -20,6 +21,7 @@ import com.babel.hecate.scanner.TokenEnum;
 // Defining a parser with the following rules
 // (Also see -> https://en.wikipedia.org/wiki/LR_parser)
 // Order of precedence, from lowest to highest - the same as C
+// =               : right associative
 // ==, !=          : left associative
 // >, <, <=, >=    : left associative
 // +, -            : left associative
@@ -61,7 +63,37 @@ public class Parser {
     // print false
     // but again I can't figure out a single instance outside the repl where it wouldn't make sense
     public HecateExpression formExpression() {
-        return equals();
+        return assignment();
+    }
+
+
+    // This is tricky as we need to account for the fact that
+    // Assignment cannot be treated without context 
+    // var foo = 5
+    // foo = 6
+    // here foo cannot be expanded without context, even if we look ahead and use the equald sign 
+    // we can have assignment be levels deep like 
+    // foo.bar.baz = "hello"
+    // Like a binary expression we recursively call it only on the right hand side
+    public HecateExpression assignment() {
+        HecateExpression expression =  equals();
+
+        // Only consider asssignment here
+        if(match(TokenEnum.EQUAL)) {
+            Token equal = tokens.get(ptr -1);
+            HecateExpression right = assignment();
+            
+            if(expression instanceof VariableExpression) {
+
+                Token token = ((VariableExpression)expression).getName();
+                return new AssignmentExpression(right, token);
+            }
+
+            throw parserError(equal, "Invalid assignment target");
+
+        }
+
+        return expression;
     }
 
     // Can potentially be infinitely long 

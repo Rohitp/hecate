@@ -7,6 +7,7 @@ import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
@@ -139,6 +140,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         return variables.get(ve.getName());
     }
 
+    @Override
+    public Object visit(AssignmentExpression ae) {
+        Object value = interpret(ae.getExpression());
+        variables.assign(ae.getToken(), value);
+        return value;
+    }
+
+
 
     // Should we do more conversions besides 0 and null being falsey? To be added
     public boolean getbool(Object obj) {
@@ -174,6 +183,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         return 0;
     }
 
+ 
 
 
 }
