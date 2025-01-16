@@ -9,6 +9,7 @@ public abstract class HecateStatement {
         T visit(PrintStatement ps);
         T visit(ExpressionStatement es);
         T visit(VariableStatement vs);
+        T visit(BlockStatement bs);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

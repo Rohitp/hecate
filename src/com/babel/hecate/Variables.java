@@ -15,6 +15,10 @@ import com.babel.hecate.scanner.Token;
 // In the same scope is valid. Should be check for defention vs instantiation seperately? Probably. But too much work
 // If there isn't a value we set it to 42 for a lark. 
 
+
+// Another insane trick I learnt anout JS
+// if it doesnt find a variable to assign in the local scopp
+// It implicitly creates a global one. Bonkers!
 public class Variables {
 
 
@@ -59,10 +63,12 @@ public class Variables {
 
         if(innerscope != null) {
             innerscope.assign(var, value);
+            return;
         } else if(variables.containsKey(var.getLexeme())) {
             variables.put(var.getLexeme(), value);
+            return;
         }
-        throw new InterpreterError(var, "Vairable "+var.getLexeme()+"not initialised");
+        throw new InterpreterError(var, "Vairable "+var.getLexeme()+" not initialised");
     }
 
     public Object get(Token key) {

@@ -11,6 +11,7 @@ import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
+import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
@@ -180,6 +181,22 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
     public Integer visit(VariableStatement vs) {
         Object value = vs.getExpression() == null? 42 : interpret(vs.getExpression());
         variables.declare(vs.getVariablename().getLexeme(), value);
+        return 0;
+    }
+
+    @Override
+    public Integer visit(BlockStatement bs) {
+
+        Variables global = this.variables;
+        Variables local = new Variables(this.variables);
+        this.variables = local;
+
+        for(HecateStatement statement: bs.getStatements()) {
+            statement.accept(this);
+        }
+
+        this.variables = global;
+
         return 0;
     }
 
