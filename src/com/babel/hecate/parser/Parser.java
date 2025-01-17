@@ -6,6 +6,7 @@ import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.LogicalExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
@@ -24,6 +25,7 @@ import com.babel.hecate.scanner.TokenEnum;
 // (Also see -> https://en.wikipedia.org/wiki/LR_parser)
 // Order of precedence, from lowest to highest - the same as C
 // =               : right associative
+// or, and         : left assosiative
 // ==, !=          : left associative
 // >, <, <=, >=    : left associative
 // +, -            : left associative
@@ -78,7 +80,7 @@ public class Parser {
     // foo.bar.baz = "hello"
     // Like a binary expression we recursively call it only on the right hand side
     public HecateExpression assignment() {
-        HecateExpression expression =  equals();
+        HecateExpression expression =  or();
 
         // Only consider asssignment here
         if(match(TokenEnum.EQUAL)) {
@@ -96,6 +98,26 @@ public class Parser {
         }
 
         return expression;
+    }
+
+    private HecateExpression or() {
+        HecateExpression left = and();
+        while(match(TokenEnum.OR)) {
+            Token operator = tokens.get(ptr -1);
+            HecateExpression right = and();
+            left = new LogicalExpression(left, operator, right);
+        }
+        return left;
+    }
+
+    private HecateExpression and() {
+        HecateExpression left = equals();
+        while(match(TokenEnum.AND)) {
+            Token operator = tokens.get(ptr -1);
+            HecateExpression right = equals();
+            left = new LogicalExpression(left, operator, right);
+        }
+        return left;
     }
 
     // Can potentially be infinitely long 

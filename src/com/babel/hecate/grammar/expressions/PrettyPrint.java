@@ -29,6 +29,12 @@ public class PrettyPrint implements HecateExpression.Visitor<String> {
         return process(ae.token.getLexeme(), ae.expression);
     }
 
+    @Override
+    public String visit(LogicalExpression le) {
+        return process(le.operator.getLexeme(),le.leftExpression, le.rightExpression);
+    }
+
+    @Override
     public String visit(VariableExpression ve) {
         return ve.name.toString();
     }

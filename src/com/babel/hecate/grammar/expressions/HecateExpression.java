@@ -13,6 +13,7 @@ public abstract class HecateExpression {
         T visit(GroupExpression expression);
         T visit(VariableExpression expression);
         T visit(AssignmentExpression expression);
+        T visit(LogicalExpression expression);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

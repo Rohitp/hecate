@@ -7,6 +7,7 @@ import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
+import com.babel.hecate.grammar.expressions.LogicalExpression;
 import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
@@ -17,6 +18,7 @@ import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
+import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
     
@@ -147,6 +149,24 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         Object value = interpret(ae.getExpression());
         variables.assign(ae.getToken(), value);
         return value;
+    }
+
+    // https://docs.python.org/3/reference/expressions.html#boolean-operations
+    // Following the same spec here
+    // "forty-two" or 42 -> returns forty-two
+    // "forty-two" and 42 -> returns 42
+    @Override
+    public Object visit(LogicalExpression le) {
+        Object left = le.getLeftExpression().accept(this);
+        Object right = le.getRightExpression().accept(this);
+        if(le.getOperator().getType() == TokenEnum.OR) {
+            if(getbool(left)) return left;
+        } else {
+            if(!getbool(left)) return right;
+        }
+
+        return le.getRightExpression().accept(this);
+         
     }
 
 

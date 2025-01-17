@@ -1,5 +1,7 @@
-if(!true) print "10";
- else print 5;
+print "hi" or 2;
+print "hi" and 2;
+if(true or false) print "first";
+if(true and true) print "second";
 
 
 // var a = 5;
