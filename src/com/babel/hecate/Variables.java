@@ -61,25 +61,53 @@ public class Variables {
     // Assign makes sure the variable is declared before setting value
     public void assign(Token var, Object value) {
 
-        if(innerscope != null) {
-            innerscope.assign(var, value);
-            return;
-        } else if(variables.containsKey(var.getLexeme())) {
+        if(variables.containsKey(var.getLexeme())) {
             variables.put(var.getLexeme(), value);
             return;
         }
+        else if(innerscope != null) {
+            innerscope.assign(var, value);
+            return;
+        } 
+     
         throw new InterpreterError(var, "Vairable "+var.getLexeme()+" not initialised");
     }
 
     public Object get(Token key) {
+    
+        if(variables.containsKey(key.lexeme)) {
+            return variables.get(key.lexeme);     
+        }
+
         if(innerscope != null && innerscope.variables.containsKey(key.getLexeme())) {
             return innerscope.variables.get(key.lexeme);
         }
 
-        if(variables.containsKey(key.lexeme)) {
-            return variables.get(key.lexeme);
-        }
+        
+
         throw new InterpreterError(key, "Undefined variable "+key.getLexeme());
+    }
+
+    public String stringify(int level) {
+
+
+        
+        StringBuilder print = new StringBuilder();
+        if(innerscope != null)
+            print.append(innerscope.stringify(level + 1));
+        print.append("{");
+        print.append("\n");
+        print.append("level: "+Integer.toString(level));
+        print.append("\n");
+        for(String var : variables.keySet()) {
+            print.append(var);
+            print.append(" -> ");
+            print.append(variables.get(var));
+            print.append("\t");
+        }
+        print.append("\n");
+        print.append("}");
+        return print.toString();
     }
     
 }

@@ -184,11 +184,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         return 0;
     }
 
+
+    // Create an outer enclosing scope with the new one for each block
+    // Rine and repeat
     @Override
     public Integer visit(BlockStatement bs) {
 
         Variables global = this.variables;
-        Variables local = new Variables(this.variables);
+        Variables local = new Variables(global);
         this.variables = local;
 
         for(HecateStatement statement: bs.getStatements()) {
