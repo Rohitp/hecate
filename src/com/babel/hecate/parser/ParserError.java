@@ -10,7 +10,7 @@ public class ParserError extends RuntimeException{
 
     // Java's runtime exception takes a message we pass on to the stack.
     ParserError(Token token, String message) {
-        super(message);
+        super(message+" at line "+token.getLineNumber());
         this.token = token;
     }
     

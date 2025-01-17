@@ -10,6 +10,7 @@ public abstract class HecateStatement {
         T visit(ExpressionStatement es);
         T visit(VariableStatement vs);
         T visit(BlockStatement bs);
+        T visit(BranchStatement bs);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

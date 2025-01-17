@@ -9,6 +9,7 @@ import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
+import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
@@ -227,6 +228,9 @@ public class Parser {
     }
 
     private HecateStatement nondeclarations() {
+        if(match(TokenEnum.IF)) {
+            return branchstatement();
+        }
         if(match(TokenEnum.PRINT)) {
             return printStatement();
         } 
@@ -237,6 +241,22 @@ public class Parser {
         }
 
         return expressionStatement();
+    }
+
+
+    private HecateStatement branchstatement() {
+        iterate(TokenEnum.LEFT_BRACKET, "Expected ( after If");
+        HecateExpression condition = formExpression();
+        iterate(TokenEnum.RIGHT_BRACKET, "Missing mathcing ) ");
+
+        HecateStatement ifbranch =  processStatement();
+        HecateStatement elsebranch = null;
+        if(match(TokenEnum.ELSE)) {
+            elsebranch = processStatement();
+        }
+
+
+        return new BranchStatement(ifbranch, elsebranch, condition);
     }
 
     private HecateStatement printStatement() {
@@ -274,7 +294,8 @@ public class Parser {
 
             throw new ParserError(tokens.get(ptr), error);
         } catch(ParserError pe) {
-            throw new ParserError(tokens.get(ptr), error);
+            System.out.println(pe.getMessage());
+            return null;
         }
         
     }

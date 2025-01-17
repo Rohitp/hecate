@@ -12,6 +12,7 @@ import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
+import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
@@ -186,7 +187,12 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
 
     // Create an outer enclosing scope with the new one for each block
-    // Rine and repeat
+    // Rinse and repeat
+    // Surprisingly ruby has a weird way to shadow variables -> outside in first  -> https://usctcr.medium.com/scope-and-variable-shadowing-in-ruby-7ac80454a055
+    // Javascript as usual is bonkers insane 
+    // https://www.oreilly.com/library/view/javascript-the-definitive/0596101996/ch04.html#:~:text=If%20you%20assign%20a%20value,the%20body%20of%20a%20function.
+    // If it creates a variable in global scope if you assign one without declaring in any scope
+    // Strict mode fixes this
     @Override
     public Integer visit(BlockStatement bs) {
 
@@ -199,6 +205,19 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         }
 
         this.variables = global;
+
+        return 0;
+    }
+
+    @Override
+    public Integer visit(BranchStatement bs) {
+
+        Boolean branchcondition = getbool(interpret(bs.getCondition()));
+        if(branchcondition) {
+            bs.getIfbranch().accept(this);
+        } else if(bs.getElsebranch() != null) {
+            bs.getElsebranch().accept(this);
+        }
 
         return 0;
     }
