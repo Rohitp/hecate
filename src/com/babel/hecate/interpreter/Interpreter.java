@@ -16,6 +16,7 @@ import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
+import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.scanner.TokenEnum;
@@ -196,6 +197,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
     }
 
 
+
     // Variables that are uninitialised are 42 by default
     // https://hitchhikers.fandom.com/wiki/42
     @Override
@@ -239,6 +241,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
             bs.getElsebranch().accept(this);
         }
 
+        return 0;
+    }
+
+    @Override
+    public Integer visit(LoopStatement ls) {
+        while(getbool(interpret(ls.getCondition()))) {
+            ls.getStatement().accept(this);
+        }
         return 0;
     }
 

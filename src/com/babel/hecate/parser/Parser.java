@@ -13,6 +13,7 @@ import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
+import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
 
@@ -253,6 +254,11 @@ public class Parser {
         if(match(TokenEnum.IF)) {
             return branchstatement();
         }
+
+        if(match(TokenEnum.WHILE)) {
+            return loopstatement();
+        }
+
         if(match(TokenEnum.PRINT)) {
             return printStatement();
         } 
@@ -265,6 +271,16 @@ public class Parser {
         return expressionStatement();
     }
 
+
+    private HecateStatement loopstatement() {
+        iterate(TokenEnum.LEFT_BRACKET, "Expected ( after while");
+        HecateExpression consition = formExpression();
+        iterate(TokenEnum.RIGHT_BRACKET, "Missing mathcing ) ");
+
+        HecateStatement body = processStatement();
+
+        return new LoopStatement(body, consition);
+    }
 
     private HecateStatement branchstatement() {
         iterate(TokenEnum.LEFT_BRACKET, "Expected ( after If");
