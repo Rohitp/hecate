@@ -74,6 +74,7 @@ public class Variables {
     }
 
     public Object get(Token key) {
+
     
         if(variables.containsKey(key.lexeme)) {
             return variables.get(key.lexeme);     
@@ -82,6 +83,7 @@ public class Variables {
         if(innerscope != null && innerscope.variables.containsKey(key.getLexeme())) {
             return innerscope.variables.get(key.lexeme);
         }
+
 
         
 

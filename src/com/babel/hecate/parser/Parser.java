@@ -3,10 +3,12 @@ package com.babel.hecate.parser;
 import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
+import com.babel.hecate.grammar.expressions.FunctioncallExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.LogicalExpression;
+import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
@@ -32,6 +34,7 @@ import com.babel.hecate.scanner.TokenEnum;
 // +, -            : left associative
 // /, *            : left associative 
 // !,-             : right associative
+// function()      : right associative
 // Recursive descent parsing is where we're going -> https://en.wikipedia.org/wiki/Recursive_descent_parser
  // This is preferable also because, each production drectly translates to a function. 
  // We can continue with the visitor pattern and add a visitor for each object
@@ -175,7 +178,51 @@ public class Parser {
             HecateExpression right = literal();
             return new UnaryExpression(operator, right);
         }
-        return literal();
+        return func();
+    }
+
+
+    // Keep in mind we can call arbitary functions like func()()
+    // def outer_function():
+    // def inner_function():
+    //     print("Inner function called")
+    // return inner_function
+
+    // and then calling 
+
+    // outer_function()()
+
+    // is valid
+
+    private HecateExpression func() {
+        HecateExpression expr = literal();
+
+        //Loop till we don't get an opening bracket
+        while(true) {
+            if(match(TokenEnum.LEFT_BRACKET)) {
+                expr = callstack(expr);
+            } else {
+                break;
+            }
+        }
+
+        return expr;
+    }
+
+    // https://bugs.python.org/issue27213
+    // Looking at this for behaviour
+    private HecateExpression callstack(HecateExpression expr) {
+
+        ArrayList<HecateExpression> arguments = new ArrayList<>();
+        //Add all function arguments to an array
+        if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() != TokenEnum.RIGHT_BRACKET) {
+            do {
+                arguments.add(formExpression())
+            } while(match(TokenEnum.COMMA));
+        }
+
+        Token rightBracket = iterate(TokenEnum.RIGHT_BRACKET, "Missing closing ) for function");
+        return new FunctioncallExpression(expr, arguments, rightBracket);
     }
 
     // Literal can be true, false, string, number or Nietzsche
@@ -259,6 +306,10 @@ public class Parser {
             return loopstatement();
         }
 
+        if(match(TokenEnum.FOR)) {
+            return sugar();
+        }
+
         if(match(TokenEnum.PRINT)) {
             return printStatement();
         } 
@@ -271,6 +322,109 @@ public class Parser {
         return expressionStatement();
     }
 
+
+    // a for loop is just syntactic sugar over a while
+    // Using the specification here -> https://en.cppreference.com/w/c/language/for
+    // Its versatile in the sense it has 
+    // 1 - An initialisation clause
+    // 2 - a condition
+    // 3 - an iteration expression
+    // all of which are optional
+    // for( i = 0; i < 10; i++) is as valid as for(;;)
+    // we just match for the overall brackets and semicolon syntax and map it to a while loop
+    private HecateStatement sugar() {
+        iterate(TokenEnum.LEFT_BRACKET, "Expected ( after for");
+
+        HecateStatement init;
+        
+        // No initialiser
+        if(match(TokenEnum.SEMICOLON)) {
+            init = null;
+        } else if(match(TokenEnum.VAR)) { // Declaration statement here
+            init = declarations();
+        } else {
+            init = expressionStatement();
+        }
+
+        HecateExpression condition = null;
+        if(!(tokens.get(ptr).getType() == TokenEnum.SEMICOLON && tokens.get(ptr).getType() != TokenEnum.EOF)) {
+            condition = formExpression();
+        }
+
+        iterate(TokenEnum.SEMICOLON, "Expected ; after condition in for");
+
+        HecateExpression incr = null;
+        if(!(tokens.get(ptr).getType() == TokenEnum.RIGHT_BRACKET && tokens.get(ptr).getType() != TokenEnum.EOF)) {
+            incr = formExpression();
+        }
+
+        iterate(TokenEnum.RIGHT_BRACKET, "Expected ) in for");
+
+        HecateStatement loopbody = processStatement();
+
+        if(incr != null) {
+            ArrayList<HecateStatement> loopstatements = new ArrayList<>();
+            loopstatements.add(loopbody);
+            loopstatements.add(new ExpressionStatement(incr));
+            loopbody = new BlockStatement(loopstatements);
+        }
+
+        if(condition == null) {
+            condition = new LiteralExpression(true);
+        }
+
+        loopbody = new LoopStatement(loopbody, condition);
+
+        if(init != null) {
+            ArrayList<HecateStatement> loopstatements = new ArrayList<>();
+            loopstatements.add(init);
+            loopstatements.add(loopbody);
+            loopbody = new BlockStatement(loopstatements);
+        }
+
+        //So the variable isn't getting scoped correctly in the wrapping/
+        // So will figure this out later
+        // BlockStatement loopdebug = (BlockStatement)loopbody;
+        // for(HecateStatement statement: loopdebug.getStatements()) {
+        //     System.out.println("Outermost "+statement);
+        //     System.out.println(" ");
+        //     if(statement instanceof VariableStatement) {
+        //         VariableStatement vs = (VariableStatement)statement;
+        //         HecateExpression  expr = vs.getExpression();
+        //         LiteralExpression le = (LiteralExpression)expr;
+        //         System.out.println("Variable statement: "+vs.getVariablename().getLexeme()+ " "+le.getLiteral());
+        //     }
+
+        //     if(statement instanceof LoopStatement) {
+        //         LoopStatement ls = (LoopStatement)statement;
+        //         HecateStatement loops = ls.getStatement();
+        //         HecateExpression cond = ls.getCondition();
+        //         System.out.println("Condition: "+new PrettyPrint().visit((BinaryExpression)cond));
+
+        //         if(loops instanceof BlockStatement) {
+        //             BlockStatement bs = (BlockStatement)loops;
+        //             for(HecateStatement is: bs.getStatements()) {
+        //                 if(is instanceof BlockStatement) {
+        //                     for(HecateStatement iis : ((BlockStatement)is).getStatements() ) {
+        //                         System.out.println("innermost"+iis);
+        //                     }
+        //                 }
+        //                 if(is instanceof ExpressionStatement) {
+        //                     ExpressionStatement es = (ExpressionStatement)is;
+        //                     System.out.println("increment "+ new PrettyPrint().visit ( ((BinaryExpression)((AssignmentExpression)es.getHe()).getExpression())  ) );
+        //                 }
+        //             }
+        //         }
+                
+        //     }
+        // }
+
+
+
+
+
+        return loopbody;
+    }
 
     private HecateStatement loopstatement() {
         iterate(TokenEnum.LEFT_BRACKET, "Expected ( after while");

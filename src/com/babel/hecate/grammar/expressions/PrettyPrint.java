@@ -52,5 +52,9 @@ public class PrettyPrint implements HecateExpression.Visitor<String> {
         return print.toString();
     }
 
+    public String visit(FunctioncallExpression fe) {
+        return "function";
+    }
+
     
 }

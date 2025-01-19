@@ -1,15 +1,8 @@
-print "hi" or 2;
-print "hi" and 2;
-if(true or false) print "first";
-if(true and true) print "second";
 
 
-// var a = 5;
-// var b = 10;
-// var c;
-// print a + b;
-// print c;
-
+for(var i = 0; i < 10; i = i + 1) {
+    //print i;
+}
 
 
 //print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);

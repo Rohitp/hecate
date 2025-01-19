@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.babel.hecate.Hecate;
 import com.babel.hecate.Variables;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
+import com.babel.hecate.grammar.expressions.FunctioncallExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
@@ -19,6 +20,7 @@ import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
+import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
@@ -168,6 +170,31 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
         return le.getRightExpression().accept(this);
          
+    }
+
+    @Override
+    public Object visit(FunctioncallExpression fe) {
+
+        // Evaluating what calls the function
+        Object func = interpret(fe.getNamecall());
+
+        ArrayList<Object> args = new ArrayList<>();
+        for(HecateExpression exp : fe.getArgs()) {
+            args.add(interpret(exp));
+        }
+
+        if(!(func instanceof InterfaceLambda)) {
+            throw new InterpreterError(fe.getToken(), "Not a callable type");
+        }
+
+        
+        InterfaceLambda fn = (InterfaceLambda)func;
+
+        if(args.size() != fn.params()) {
+            throw new InterpreterError(fe.getToken(), "Parameter mismatch - expected"+fn.params()+" got"+args.size());
+        }
+
+        return fn.call(args, this);
     }
 
 
