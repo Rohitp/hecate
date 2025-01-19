@@ -1,8 +1,13 @@
 
-
-for(var i = 0; i < 10; i = i + 1) {
-    //print i;
+var i = 10;
+var a = 88;
+while(i > 0) {
+    var a = 0;
+    print a;
+    print i * i;
+    i = i -1;
 }
+print a;
 
 
 //print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);

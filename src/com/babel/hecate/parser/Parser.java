@@ -217,7 +217,7 @@ public class Parser {
         //Add all function arguments to an array
         if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() != TokenEnum.RIGHT_BRACKET) {
             do {
-                arguments.add(formExpression())
+                arguments.add(formExpression());
             } while(match(TokenEnum.COMMA));
         }
 

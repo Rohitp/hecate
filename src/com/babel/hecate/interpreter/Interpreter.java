@@ -26,7 +26,8 @@ import com.babel.hecate.scanner.TokenEnum;
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
     
 
-    private Variables variables = new Variables();
+    private Variables globals = new Variables();
+    private Variables variables = globals;
 
     public Object interpret(HecateExpression expr) {
         Object result = 0;
@@ -190,6 +191,9 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         
         InterfaceLambda fn = (InterfaceLambda)func;
 
+        // So once again javascript is insane - if the number of params of a function dont match
+        // JS simply discards extra params, or adds undefined till it gets to the number
+        // The more I look into it, the more insane it is
         if(args.size() != fn.params()) {
             throw new InterpreterError(fe.getToken(), "Parameter mismatch - expected"+fn.params()+" got"+args.size());
         }
