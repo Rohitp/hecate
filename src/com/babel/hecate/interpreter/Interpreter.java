@@ -197,6 +197,8 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
             args.add(interpret(exp));
         }
 
+        System.out.println(func);
+
         if(!(func instanceof InterfaceLambda)) {
             throw new InterpreterError(fe.getToken(), "Not a callable type");
         }

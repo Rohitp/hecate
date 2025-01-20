@@ -1,7 +1,5 @@
 func count(a) {
     print a;
-    if(a > 0)
-    count(a - 1);
 }
 
 count(6);

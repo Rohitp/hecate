@@ -43,7 +43,7 @@ public class HecateLambda  implements InterfaceLambda{
 
     @Override
     public String toString() {
-        return declaration.getFunc().getLexeme();
+        return "function "+declaration.getFunc().getLexeme();
     }
 
     
