@@ -16,17 +16,22 @@ import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
+import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
+import com.babel.hecate.lambdacalculus.HecateLambda;
 import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
     
 
-    private Variables globals = new Variables();
+    // globals is a fixed reference to the outermost set of variables
+    // variables tracks the current scope
+
+    public Variables globals = new Variables();
     private Variables variables = globals;
 
     public Object interpret(HecateExpression expr) {
@@ -38,6 +43,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         }
 
         return result;
+    }
+
+
+    public void executeblockstatements(ArrayList<HecateStatement> statements, Variables variables) {
+        Variables prev = this.variables;
+        this.variables = variables;
+        executestatements(statements);
+        this.variables = prev;
     }
 
     // Naming is hard. Close to impossible
@@ -280,6 +293,13 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         while(getbool(interpret(ls.getCondition()))) {
             ls.getStatement().accept(this);
         }
+        return 0;
+    }
+
+    @Override
+    public Integer visit(FunctionStatement fs) {
+        HecateLambda lambda = new HecateLambda(fs);
+        variables.declare(fs.getFunc().getLexeme(), lambda);
         return 0;
     }
 

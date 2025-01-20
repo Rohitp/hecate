@@ -1,14 +1,10 @@
-
-var i = 10;
-var a = 88;
-while(i > 0) {
-    var a = 0;
+func count(a) {
     print a;
-    print i * i;
-    i = i -1;
+    if(a > 0)
+    count(a - 1);
 }
-print a;
 
+count(6);
 
 //print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);
 //print 7 + 17;

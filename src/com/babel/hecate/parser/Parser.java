@@ -14,6 +14,7 @@ import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
+import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
@@ -272,7 +273,10 @@ public class Parser {
 
         try {
             if(match(TokenEnum.VAR)) {
-                return declarations();
+                return vardeclarations();
+            }
+            if(match(TokenEnum.FUNC)) {
+                return funcdeclaration();
             }
             return nondeclarations(); 
         } catch(ParserError pe) {
@@ -281,7 +285,31 @@ public class Parser {
         }
     }
 
-    private HecateStatement declarations() {
+    private HecateStatement funcdeclaration() {
+
+        Token functionname = iterate(TokenEnum.IDENTIFIER, "Expected function name - name your functions");
+        iterate(TokenEnum.LEFT_BRACKET, "Missing ( after function declaration");
+        ArrayList<Token> params = new ArrayList<>();
+        if(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() != TokenEnum.RIGHT_BRACKET) {
+            do {
+                params.add(iterate(TokenEnum.IDENTIFIER, "Syntax error in function defenition - missing arguments"));
+            }while(match(TokenEnum.COMMA));
+        }
+
+        iterate(TokenEnum.RIGHT_BRACKET, "Missing ) after function declaration");
+
+        iterate(TokenEnum.LEFT_BRACE, "Missing { after function declaration");
+
+        ArrayList<HecateStatement> statements = new ArrayList<>();
+
+
+        // A function body is always a statement of blocks
+        statements = blockStatement();
+
+        return new FunctionStatement(functionname, statements, params);
+    }
+
+    private HecateStatement vardeclarations() {
         try {
             Token varname = iterate(TokenEnum.IDENTIFIER, "Expected variable name - name your variables");
             HecateExpression expr = null;
@@ -341,7 +369,7 @@ public class Parser {
         if(match(TokenEnum.SEMICOLON)) {
             init = null;
         } else if(match(TokenEnum.VAR)) { // Declaration statement here
-            init = declarations();
+            init = vardeclarations();
         } else {
             init = expressionStatement();
         }
