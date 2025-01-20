@@ -18,6 +18,7 @@ import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
+import com.babel.hecate.grammar.statements.ReturnStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
 
 import java.util.ArrayList;
@@ -347,7 +348,25 @@ public class Parser {
 
         }
 
+        if(match(TokenEnum.RETURN)) {
+            return returnstatement();
+        }
+
         return expressionStatement();
+    }
+
+
+    private HecateStatement returnstatement() {
+
+        Token returnkey = tokens.get(ptr -1);
+        HecateExpression expr = null;
+        if(!(tokens.get(ptr).getType() == TokenEnum.SEMICOLON && tokens.get(ptr).getType() != TokenEnum.EOF)) {
+            expr = formExpression();
+        }
+
+        iterate(TokenEnum.SEMICOLON, "No ; after return ");
+
+        return new ReturnStatement(expr, returnkey);
     }
 
 

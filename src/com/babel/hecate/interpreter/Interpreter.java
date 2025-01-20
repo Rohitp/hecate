@@ -20,9 +20,11 @@ import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
 import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
+import com.babel.hecate.grammar.statements.ReturnStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.lambdacalculus.HecateLambda;
 import com.babel.hecate.lambdacalculus.InterfaceLambda;
+import com.babel.hecate.lambdacalculus.Return;
 import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
@@ -197,8 +199,6 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
             args.add(interpret(exp));
         }
 
-        System.out.println(func);
-
         if(!(func instanceof InterfaceLambda)) {
             throw new InterpreterError(fe.getToken(), "Not a callable type");
         }
@@ -303,6 +303,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         HecateLambda lambda = new HecateLambda(fs);
         variables.declare(fs.getFunc().getLexeme(), lambda);
         return 0;
+    }
+
+    @Override
+    public Integer visit(ReturnStatement rs) {
+
+        Object returnvalue = null;
+        if(rs.getReturnValue() != null) returnvalue = interpret(rs.getReturnValue());
+        throw new Return(returnvalue);
     }
 
  

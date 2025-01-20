@@ -31,9 +31,13 @@ public class HecateLambda  implements InterfaceLambda{
         // Each function needs its level of scoping. 
         // Take a simple recursion 
         // This cannot be deduped unless at the variable level
-        interpreter.executeblockstatements(this.declaration.getBody(), variables);
+        try{
+            interpreter.executeblockstatements(this.declaration.getBody(), variables);
+        } catch(Return value) {
+            return value.returnvalue;
+        }
 
-        return 0;
+        return 42;
     }
 
     @Override

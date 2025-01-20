@@ -13,6 +13,7 @@ public abstract class HecateStatement {
         T visit(BranchStatement bs);
         T visit(LoopStatement ls);
         T visit(FunctionStatement fs);
+        T visit(ReturnStatement rs);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

@@ -1,17 +1,31 @@
-func count(a) {
-    print a;
+function fact(n) {
+    if(n == 1) {
+        return 1;
+    }
+    return n * fact(n - 1);
 }
 
-count(6);
-
-//print (5 - 7 + 44/2) == (- 7 + 44/2 + 5);
-//print 7 + 17;
-//print "hello";
+function add( a, b ) {
+    return a + b; 
+}
 
 
-//5 == 7
-//19 == 9
-//9
+function fibo(n) {
+    if(n < 2) {
+        return n;
+    }
+    return (fibo(n - 1) + fibo(n - 2));
+}
 
-//true == !false != 5 < "hello" + 8
-//9 + 6
+//print fibo(5);
+
+fact(3);
+
+var i = 0;
+while(i < 3) {
+    print fact(i);
+    i = i + 1;
+}
+
+print add(1, 2);
+
