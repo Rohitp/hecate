@@ -1,31 +1,36 @@
-function fact(n) {
-    if(n == 1) {
+
+var n = 100;
+func fib(n) {
+    if(n <= 2) {
         return 1;
     }
-    return n * fact(n - 1);
+    return fib(n-1) + fib(n - 2);
 }
 
-function add( a, b ) {
-    return a + b; 
-}
-
-
-function fibo(n) {
-    if(n < 2) {
+func fact(n) {
+    if(n == 1) {
         return n;
     }
-    return (fibo(n - 1) + fibo(n - 2));
+    return n * fact(n-1);
 }
 
-//print fibo(5);
+func add(x, y) {
+    return x + y;
+}
 
-fact(3);
+//print n;
 
-var i = 0;
-while(i < 3) {
+print fact(5);
+var i = 1;
+while(i < 10) {
     print fact(i);
     i = i + 1;
 }
 
+
 print add(1, 2);
+
+
+
+
 

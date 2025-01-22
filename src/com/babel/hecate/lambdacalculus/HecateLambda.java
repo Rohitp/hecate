@@ -11,9 +11,11 @@ public class HecateLambda  implements InterfaceLambda{
 
 
     private final FunctionStatement declaration;
+    private final Variables closure;
 
-    public HecateLambda(FunctionStatement declaration) {
+    public HecateLambda(FunctionStatement declaration, Variables closure) {
         this.declaration = declaration;
+        this.closure = closure;
 
     }
 
@@ -23,10 +25,14 @@ public class HecateLambda  implements InterfaceLambda{
 
     @Override
     public Object call(ArrayList<Object> args, Interpreter interpreter) {
-        Variables variables = new Variables(interpreter.globals);
+
+        
+        Variables variables = new Variables(closure);
         for(int i = 0; i < declaration.getParameters().size(); i++) {
             variables.declare(declaration.getParameters().get(i).lexeme, args.get(i));
         }
+
+
 
         // Each function needs its level of scoping. 
         // Take a simple recursion 

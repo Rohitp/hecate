@@ -70,7 +70,7 @@ public class Variables {
             return;
         } 
      
-        throw new InterpreterError(var, "Vairable "+var.getLexeme()+" not initialised");
+        throw new InterpreterError(var, "Variable "+var.getLexeme()+" not initialised");
     }
 
     public Object get(Token key) {
@@ -83,9 +83,6 @@ public class Variables {
         if(innerscope != null && innerscope.variables.containsKey(key.getLexeme())) {
             return innerscope.variables.get(key.lexeme);
         }
-
-
-        
 
         throw new InterpreterError(key, "Undefined variable "+key.getLexeme());
     }

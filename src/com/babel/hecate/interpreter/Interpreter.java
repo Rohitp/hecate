@@ -33,7 +33,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
     // globals is a fixed reference to the outermost set of variables
     // variables tracks the current scope
 
-    public Variables globals = new Variables();
+    public final Variables globals = new Variables();
     private Variables variables = globals;
 
     public Object interpret(HecateExpression expr) {
@@ -160,6 +160,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     @Override
     public Object visit(VariableExpression ve) {
+        // System.out.println(variables.stringify(0));
         return variables.get(ve.getName());
     }
 
@@ -194,10 +195,12 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         // Evaluating what calls the function
         Object func = interpret(fe.getNamecall());
 
+
         ArrayList<Object> args = new ArrayList<>();
         for(HecateExpression exp : fe.getArgs()) {
             args.add(interpret(exp));
         }
+
 
         if(!(func instanceof InterfaceLambda)) {
             throw new InterpreterError(fe.getToken(), "Not a callable type");
@@ -266,13 +269,16 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
         Variables global = this.variables;
         Variables local = new Variables(global);
-        this.variables = local;
 
-        for(HecateStatement statement: bs.getStatements()) {
-            statement.accept(this);
+        try{ 
+            this.variables = local;
+
+            for(HecateStatement statement: bs.getStatements()) {
+                statement.accept(this);
+            }
+        } finally {
+            this.variables = global;
         }
-
-        this.variables = global;
 
         return 0;
     }
@@ -300,7 +306,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     @Override
     public Integer visit(FunctionStatement fs) {
-        HecateLambda lambda = new HecateLambda(fs);
+        HecateLambda lambda = new HecateLambda(fs, variables);
         variables.declare(fs.getFunc().getLexeme(), lambda);
         return 0;
     }
