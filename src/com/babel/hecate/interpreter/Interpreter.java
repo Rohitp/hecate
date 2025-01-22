@@ -50,9 +50,12 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     public void executeblockstatements(ArrayList<HecateStatement> statements, Variables variables) {
         Variables prev = this.variables;
-        this.variables = variables;
-        executestatements(statements);
-        this.variables = prev;
+        try{
+            this.variables = variables;
+            executestatements(statements);
+        } finally {
+            this.variables = prev;
+        }
     }
 
     // Naming is hard. Close to impossible
