@@ -1,5 +1,7 @@
 package com.babel.hecate.interpreter;
+import java.beans.Expression;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.babel.hecate.Hecate;
 import com.babel.hecate.Variables;
@@ -25,6 +27,7 @@ import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.lambdacalculus.HecateLambda;
 import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.lambdacalculus.Return;
+import com.babel.hecate.scanner.Token;
 import com.babel.hecate.scanner.TokenEnum;
 
 public class Interpreter implements HecateExpression.Visitor<Object>, HecateStatement.Visitor<Integer>{
@@ -35,6 +38,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     public final Variables globals = new Variables();
     private Variables variables = globals;
+    private HashMap<HecateExpression, Integer> localscope = new HashMap<>();
 
     public Object interpret(HecateExpression expr) {
         Object result = 0;
@@ -163,7 +167,6 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     @Override
     public Object visit(VariableExpression ve) {
-        // System.out.println(variables.stringify(0));
         return variables.get(ve.getName());
     }
 
@@ -221,6 +224,23 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
         return fn.call(args, this);
     }
+
+
+    // Binding for statc analysis and looking up variable scopes
+    public void bind(HecateExpression expr, int level) {
+        localscope.put(expr, level); 
+    }
+
+    private Object findvar(Token name, HecateExpression expr) {
+        Integer level = localscope.get(expr);
+        if(level != null) {
+            return variables.seekvalue(level, name.getLexeme());
+        } else {
+            return globals.get(name);
+        }
+    }
+
+    
 
 
 

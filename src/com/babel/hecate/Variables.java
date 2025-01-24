@@ -52,6 +52,10 @@ public class Variables {
         this.innerscope = scope;
     }
 
+    public Variables getInnerscope() {
+        return innerscope;
+    }
+
     // Default scope declaration
     public void declare(String name, Object value) {
         variables.put(name, value);
@@ -86,6 +90,19 @@ public class Variables {
 
         throw new InterpreterError(key, "Undefined variable "+key.getLexeme());
     }
+
+    public Object seekvalue(int level, String name) {
+        return ancestor(level).variables.get(name);
+    }
+
+    private Variables ancestor(int level) {
+        Variables variables = this;
+        for(int i = 0; i < level; i++) {
+            variables = variables.getInnerscope();
+        }
+        return variables;
+    }
+    
 
     public String stringify(int level) {
 
