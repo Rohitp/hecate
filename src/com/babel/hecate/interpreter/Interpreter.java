@@ -167,7 +167,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     @Override
     public Object visit(VariableExpression ve) {
-        return variables.get(ve.getName());
+        return findvar(ve.getName(), ve);
     }
 
     @Override
