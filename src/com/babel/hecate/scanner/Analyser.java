@@ -1,5 +1,6 @@
 package com.babel.hecate.scanner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -40,6 +41,12 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
 
     public Analyser(Interpreter interpreter) {
         this.interpreter = interpreter;
+    }
+
+    public void analyse(ArrayList<HecateStatement> statements) {
+        for(HecateStatement statement: statements) {
+            staticanalyse(statement);
+        }
     }
 
     

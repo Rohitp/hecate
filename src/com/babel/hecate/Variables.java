@@ -95,6 +95,10 @@ public class Variables {
         return ancestor(level).variables.get(name);
     }
 
+    public void assignvalue(int level, Token name, Object value) {
+        ancestor(level).variables.put(name.lexeme, value);
+    }
+
     private Variables ancestor(int level) {
         Variables variables = this;
         for(int i = 0; i < level; i++) {

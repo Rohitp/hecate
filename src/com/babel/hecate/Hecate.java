@@ -16,6 +16,7 @@ import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.interpreter.Interpreter;
 import com.babel.hecate.interpreter.InterpreterError;
 import com.babel.hecate.parser.Parser;
+import com.babel.hecate.scanner.Analyser;
 import com.babel.hecate.scanner.Scanner;
 import com.babel.hecate.scanner.Token;
 
@@ -97,11 +98,15 @@ public class Hecate {
         // HecateExpression exp = parser.formExpression();
         if(error)
             return;
-        // System.out.println(exp.accept(new PrettyPrint()));
+
 
         Interpreter interpreter = new Interpreter();
-        // System.out.println(interpreter.interpret(exp).toString());
+        Analyser analyser = new Analyser(interpreter);
         ArrayList<HecateStatement> statements = parser.parse();
+
+        analyser.analyse(statements);     
+
+        // System.out.println(interpreter.interpret(exp).toString());
         interpreter.executestatements(statements);
         
 

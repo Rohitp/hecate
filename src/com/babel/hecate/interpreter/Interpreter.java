@@ -173,7 +173,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
     @Override
     public Object visit(AssignmentExpression ae) {
         Object value = interpret(ae.getExpression());
-        variables.assign(ae.getToken(), value);
+        Integer level = localscope.get(ae);
+        if(level != null) {
+            variables.assignvalue(level, ae.getToken(), value);
+        } else {
+            globals.assign(ae.getToken(), value);
+        }
+
+
         return value;
     }
 
@@ -239,6 +246,7 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
             return globals.get(name);
         }
     }
+
 
     
 
