@@ -104,7 +104,10 @@ public class Hecate {
         Analyser analyser = new Analyser(interpreter);
         ArrayList<HecateStatement> statements = parser.parse();
 
-        analyser.analyse(statements);     
+        analyser.analyse(statements);    
+        
+        if(error)
+            return;
 
         // System.out.println(interpreter.interpret(exp).toString());
         interpreter.executestatements(statements);

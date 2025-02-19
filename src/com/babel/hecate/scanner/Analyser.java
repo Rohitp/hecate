@@ -26,7 +26,7 @@ import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.interpreter.Interpreter;
 
 
-// For satic analysis - the tools are verry similair to an interpretter
+// For static analysis - the tools are verry similair to an interpretter
 // So it should be easy enough to implement
 public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement.Visitor<Void> {
 
@@ -39,6 +39,13 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
     // If we can't find it here it's global
     private final Stack<HashMap<String, Boolean>> scopes = new Stack<>(); 
 
+
+    // Tracking if we're in a function or a class.
+    // There are multiple things that can only happen in a function or a class
+    // Like return statements, or constructors
+    private FuncEnum funcpointer = FuncEnum.NIETZSCHE;
+    private ClassEnum classpointer = ClassEnum.NIETZSCHE;
+
     public Analyser(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
@@ -47,7 +54,7 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         for(HecateStatement statement: statements) {
             staticanalyse(statement);
         }
-    }
+    }   
 
     
     @Override
@@ -74,6 +81,11 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
 
     @Override
     public Void visit(ReturnStatement statement) {
+
+        if(funcpointer == FuncEnum.NIETZSCHE) {
+            Hecate.errorHandler(statement.getReturnkeyword(), "You need to return from within a function");
+        }
+
         if(statement.getReturnValue() != null) {
             staticanalyse(statement.getReturnValue());
         }
@@ -85,6 +97,10 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         declare(statement.getFunc());
         define(statement.getFunc());
         scope();
+
+        FuncEnum enclosing = funcpointer;
+        funcpointer = FuncEnum.FUNC;
+
         for(Token parameter : statement.getParameters()) {
             declare(parameter);
             define(parameter);
@@ -94,6 +110,7 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
             staticanalyse(stmt);
         }
         descope();
+        funcpointer = enclosing;
         return null;
     }
 
@@ -102,6 +119,7 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         staticanalyse(statement.getHe());
         return null;
     }
+
 
     @Override
     public Void visit(BranchStatement statement) {
@@ -146,6 +164,18 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
 
     private void declare(Token name) {
         if(scopes.isEmpty()) return;
+
+        // We don't want local scope overrriding
+        // {
+        //     var a = 1;
+        //     var a = "hello";
+        //     probably a mistake. This isn't javascript.
+        // }
+        if(scopes.peek().containsKey(name.getLexeme())) {
+            Hecate.errorHandler(name, "Can't redeclare a variable in the same scope");
+        }
+
+        
         scopes.peek().put(name.getLexeme(), false);
     }
 
