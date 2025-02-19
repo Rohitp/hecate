@@ -346,8 +346,12 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
     @Override
     public Integer visit(ClassStatement cs) {
+
+        // Here 
         variables.declare(cs.getClassname().getLexeme(), null);
         HecatePrototypes prototype = new HecatePrototypes(cs.getClassname().lexeme, null);
+        // This weird quirk is needed so that the class can refer to itself
+        // https://stackoverflow.com/questions/336859/var-functionname-function-vs-function-functionname
         variables.assign(cs.getClassname(), prototype);
         return 0;
     }

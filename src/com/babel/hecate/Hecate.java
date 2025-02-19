@@ -44,7 +44,7 @@ public class Hecate {
             parseFile(args[0]);
         } else if(debug) {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            parseFile("../tests/parsertest.txt");
+            parseFile("./tests/parsertest-class.txt");
         } else {
             promptLoop();
         }

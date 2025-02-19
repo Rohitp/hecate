@@ -221,6 +221,7 @@ public class Scanner {
         identifiermap.put("for", TokenEnum.FOR);
         identifiermap.put("var", TokenEnum.VAR);
         identifiermap.put("return", TokenEnum.RETURN);
+        identifiermap.put("class", TokenEnum.CLASS);
 
         while(ptr < code.length() && ( isVariableLegalAlphabet(code.charAt(ptr)) || Character.isDigit(code.charAt(ptr)) ) ) {
             getNextChar();

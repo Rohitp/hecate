@@ -4,7 +4,7 @@ SRC="./src"
 OUT="./bin"
 JAR_NAME="hecate.jar"
 MAIN_CLASS="com.babel.hecate.Hecate"
-PARSE_FILE_NAME="./tests/parsertest.txt"
+PARSE_FILE_NAME="./tests/parsertest-class.txt"
 
 echo "Removing old binary files in ${OUT}/*"
 rm -rf "${OUT}"/*
