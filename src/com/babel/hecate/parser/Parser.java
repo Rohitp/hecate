@@ -8,11 +8,11 @@ import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.LogicalExpression;
-import com.babel.hecate.grammar.expressions.PrettyPrint;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
+import com.babel.hecate.grammar.statements.ClassStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
@@ -279,6 +279,9 @@ public class Parser {
             if(match(TokenEnum.FUNC)) {
                 return funcdeclaration();
             }
+            if(match(TokenEnum.CLASS)) {
+                return classdeclaration();
+            }
             return nondeclarations(); 
         } catch(ParserError pe) {
             dontpanic();
@@ -286,7 +289,21 @@ public class Parser {
         }
     }
 
-    private HecateStatement funcdeclaration() {
+    private HecateStatement classdeclaration() {
+        Token classname = iterate(TokenEnum.IDENTIFIER, "Expected class name - name your classes");
+        iterate(TokenEnum.LEFT_BRACE, "Missing { after class declaration");
+
+        ArrayList<FunctionStatement> methods = new ArrayList<>();
+
+        while(tokens.get(ptr).getType() != TokenEnum.EOF && tokens.get(ptr).getType() != TokenEnum.RIGHT_BRACE) {
+            methods.add(funcdeclaration());
+        }
+        iterate(TokenEnum.RIGHT_BRACE, "Missing matching } symbol");
+
+        return new ClassStatement(classname, methods);
+    }
+
+    private FunctionStatement funcdeclaration() {
 
         Token functionname = iterate(TokenEnum.IDENTIFIER, "Expected function name - name your functions");
         iterate(TokenEnum.LEFT_BRACKET, "Missing ( after function declaration");
@@ -429,47 +446,6 @@ public class Parser {
             loopbody = new BlockStatement(loopstatements);
         }
 
-        //So the variable isn't getting scoped correctly in the wrapping/
-        // So will figure this out later
-        // BlockStatement loopdebug = (BlockStatement)loopbody;
-        // for(HecateStatement statement: loopdebug.getStatements()) {
-        //     System.out.println("Outermost "+statement);
-        //     System.out.println(" ");
-        //     if(statement instanceof VariableStatement) {
-        //         VariableStatement vs = (VariableStatement)statement;
-        //         HecateExpression  expr = vs.getExpression();
-        //         LiteralExpression le = (LiteralExpression)expr;
-        //         System.out.println("Variable statement: "+vs.getVariablename().getLexeme()+ " "+le.getLiteral());
-        //     }
-
-        //     if(statement instanceof LoopStatement) {
-        //         LoopStatement ls = (LoopStatement)statement;
-        //         HecateStatement loops = ls.getStatement();
-        //         HecateExpression cond = ls.getCondition();
-        //         System.out.println("Condition: "+new PrettyPrint().visit((BinaryExpression)cond));
-
-        //         if(loops instanceof BlockStatement) {
-        //             BlockStatement bs = (BlockStatement)loops;
-        //             for(HecateStatement is: bs.getStatements()) {
-        //                 if(is instanceof BlockStatement) {
-        //                     for(HecateStatement iis : ((BlockStatement)is).getStatements() ) {
-        //                         System.out.println("innermost"+iis);
-        //                     }
-        //                 }
-        //                 if(is instanceof ExpressionStatement) {
-        //                     ExpressionStatement es = (ExpressionStatement)is;
-        //                     System.out.println("increment "+ new PrettyPrint().visit ( ((BinaryExpression)((AssignmentExpression)es.getHe()).getExpression())  ) );
-        //                 }
-        //             }
-        //         }
-                
-        //     }
-        // }
-
-
-
-
-
         return loopbody;
     }
 
@@ -583,6 +559,7 @@ public class Parser {
                 case WHILE:
                 case FUNC:
                 case PRINT:
+                case CLASS:
                     return;
                 default:
                     assert true;

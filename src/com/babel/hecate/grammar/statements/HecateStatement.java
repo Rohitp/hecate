@@ -14,6 +14,7 @@ public abstract class HecateStatement {
         T visit(LoopStatement ls);
         T visit(FunctionStatement fs);
         T visit(ReturnStatement rs);
+        T visit(ClassStatement cs);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

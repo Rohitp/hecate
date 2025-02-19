@@ -17,6 +17,7 @@ import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
+import com.babel.hecate.grammar.statements.ClassStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
@@ -27,6 +28,7 @@ import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.lambdacalculus.HecateLambda;
 import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.lambdacalculus.Return;
+import com.babel.hecate.prototypes.HecatePrototypes;
 import com.babel.hecate.scanner.Token;
 import com.babel.hecate.scanner.TokenEnum;
 
@@ -339,6 +341,14 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
     public Integer visit(FunctionStatement fs) {
         HecateLambda lambda = new HecateLambda(fs, variables);
         variables.declare(fs.getFunc().getLexeme(), lambda);
+        return 0;
+    }
+
+    @Override
+    public Integer visit(ClassStatement cs) {
+        variables.declare(cs.getClassname().getLexeme(), null);
+        HecatePrototypes prototype = new HecatePrototypes(cs.getClassname().lexeme, null);
+        variables.assign(cs.getClassname(), prototype);
         return 0;
     }
 

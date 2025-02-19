@@ -16,6 +16,7 @@ import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
 import com.babel.hecate.grammar.statements.BranchStatement;
+import com.babel.hecate.grammar.statements.ClassStatement;
 import com.babel.hecate.grammar.statements.ExpressionStatement;
 import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.grammar.statements.HecateStatement;
@@ -111,6 +112,13 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         }
         descope();
         funcpointer = enclosing;
+        return null;
+    }
+
+    @Override
+    public Void visit(ClassStatement statement) {
+        declare(statement.getClassname());
+        define(statement.getClassname());
         return null;
     }
 

@@ -18,3 +18,7 @@ Looking at expressions and scanning
 The interprettor pattern -> https://en.wikipedia.org/wiki/Interpreter_pattern
 And the visitor pattern.
 The BNF is also recommende reading -> https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form
+
+
+NULL is Nietzsche.
+Variables are 42 by default
