@@ -43,6 +43,7 @@ public class HecateLambda  implements InterfaceLambda{
             return value.returnvalue;
         }
 
+        // Functions also return 42 by default
         return 42;
     }
 

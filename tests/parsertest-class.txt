@@ -1,0 +1,13 @@
+class Dog {
+
+}
+
+var dog = Dog();
+
+print Dog;
+print dog;
+
+
+
+
+

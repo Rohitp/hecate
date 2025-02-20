@@ -15,6 +15,8 @@ public abstract class HecateExpression {
         T visit(AssignmentExpression expression);
         T visit(LogicalExpression expression);
         T visit(FunctioncallExpression expression);
+        T visit(Getter expression);
+        T visit(Setter expression);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

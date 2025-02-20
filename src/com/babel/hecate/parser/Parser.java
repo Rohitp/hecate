@@ -4,6 +4,7 @@ import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.FunctioncallExpression;
+import com.babel.hecate.grammar.expressions.Getter;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
@@ -203,6 +204,9 @@ public class Parser {
         while(true) {
             if(match(TokenEnum.LEFT_BRACKET)) {
                 expr = callstack(expr);
+            } else if(match(TokenEnum.DOT)) {
+                Token name = iterate(TokenEnum.IDENTIFIER, "Expected property name after .");
+                expr = new Getter(expr, name);
             } else {
                 break;
             }

@@ -7,6 +7,7 @@ import com.babel.hecate.Hecate;
 import com.babel.hecate.Variables;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.FunctioncallExpression;
+import com.babel.hecate.grammar.expressions.Getter;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
@@ -28,6 +29,7 @@ import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.lambdacalculus.HecateLambda;
 import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.lambdacalculus.Return;
+import com.babel.hecate.prototypes.HecateObject;
 import com.babel.hecate.prototypes.HecatePrototypes;
 import com.babel.hecate.scanner.Token;
 import com.babel.hecate.scanner.TokenEnum;
@@ -111,6 +113,17 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         }
 
         // TODO: Define error methods for the Interpreter. 
+    }
+
+    @Override
+    public Object visit(Getter getter) {
+      Object value = getter.getObject().accept(this);
+      if(value instanceof HecateObject) {
+        return ((HecateObject) value).get(getter.getName());
+      }
+
+      // This is when we try and get a property of a non class -> "hello".name;
+      throw new InterpreterError(getter.getName(), "Only objects have properties");
     }
 
     // Again need to handle casting and errors

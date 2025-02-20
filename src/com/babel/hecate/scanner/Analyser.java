@@ -8,6 +8,7 @@ import com.babel.hecate.Hecate;
 import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.BinaryExpression;
 import com.babel.hecate.grammar.expressions.FunctioncallExpression;
+import com.babel.hecate.grammar.expressions.Getter;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
@@ -257,6 +258,14 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
     @Override
     public Void visit(UnaryExpression expression) {
         staticanalyse(expression.getExpression());
+        return null;
+    }
+
+    // There's nothing to analyse here
+    // We just take the value and analyse it
+    @Override
+    public Void visit(Getter expression) {
+        staticanalyse(expression.getObject());
         return null;
     }
 
