@@ -39,6 +39,16 @@ public class PrettyPrint implements HecateExpression.Visitor<String> {
         return ve.name.toString();
     }
 
+    @Override
+    public String visit(Getter getter) {
+        return "Getting value from "+getter.name.getLexeme();
+    }
+
+    @Override
+    public String visit(Setter setter) {
+        return "Setting value to "+setter.name.getLexeme();
+    }
+
     private String process(String name, HecateExpression ...exprs) {
         StringBuilder print = new StringBuilder();
         print.append("( "+name+" ");

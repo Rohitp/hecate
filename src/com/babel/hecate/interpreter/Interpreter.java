@@ -14,6 +14,7 @@ import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.LogicalExpression;
 import com.babel.hecate.grammar.expressions.AssignmentExpression;
 import com.babel.hecate.grammar.expressions.PrettyPrint;
+import com.babel.hecate.grammar.expressions.Setter;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
@@ -124,6 +125,20 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
       // This is when we try and get a property of a non class -> "hello".name;
       throw new InterpreterError(getter.getName(), "Only objects have properties");
+    }
+
+    @Override
+    public Object visit(Setter setter) {
+        Object object = setter.getObject().accept(this);
+
+
+        Object value = setter.getValue().accept(this);
+        if(object instanceof HecateObject) {
+            ((HecateObject)object).set(setter.getToken(), value);
+            return value;
+        }
+
+        throw new InterpreterError(setter.getToken(), "Trying to set a value to a non class object");
     }
 
     // Again need to handle casting and errors

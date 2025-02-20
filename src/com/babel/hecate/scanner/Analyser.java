@@ -13,6 +13,7 @@ import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.LogicalExpression;
+import com.babel.hecate.grammar.expressions.Setter;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
@@ -98,21 +99,7 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
     public Void visit(FunctionStatement statement) {
         declare(statement.getFunc());
         define(statement.getFunc());
-        scope();
-
-        FuncEnum enclosing = funcpointer;
-        funcpointer = FuncEnum.FUNC;
-
-        for(Token parameter : statement.getParameters()) {
-            declare(parameter);
-            define(parameter);
-        }
-
-        for(HecateStatement stmt: statement.getBody()) {
-            staticanalyse(stmt);
-        }
-        descope();
-        funcpointer = enclosing;
+        staticanalysefunction(statement, FuncEnum.FUNC);
         return null;
     }
 
@@ -120,6 +107,10 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
     public Void visit(ClassStatement statement) {
         declare(statement.getClassname());
         define(statement.getClassname());
+
+        for(FunctionStatement fs : statement.getMethods()) {
+            staticanalysefunction(fs, FuncEnum.METHOD);
+        }
         return null;
     }
 
@@ -153,6 +144,7 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         return null;
     }
 
+
    
 
     private void scope() {
@@ -161,6 +153,27 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
 
     private void descope() {
         scopes.pop();
+    }
+
+
+    // reusing the same fucntion for functions and classes.
+    // modularity. yeah!
+    private void staticanalysefunction(FunctionStatement statement, FuncEnum type) {
+        scope();
+
+        FuncEnum enclosing = funcpointer;
+        funcpointer = type;
+
+        for(Token parameter : statement.getParameters()) {
+            declare(parameter);
+            define(parameter);
+        }
+
+        for(HecateStatement stmt: statement.getBody()) {
+            staticanalyse(stmt);
+        }
+        descope();
+        funcpointer = enclosing;
     }
 
     private void staticanalyse(HecateStatement statement) {
@@ -268,6 +281,16 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         staticanalyse(expression.getObject());
         return null;
     }
+
+
+
+    @Override
+    public Void visit(Setter expression) {
+        staticanalyse(expression.getObject());
+        staticanalyse(expression.getValue());
+        return null;
+    }
+
 
 
 

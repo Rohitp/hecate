@@ -9,6 +9,7 @@ import com.babel.hecate.grammar.expressions.HecateExpression;
 import com.babel.hecate.grammar.expressions.GroupExpression;
 import com.babel.hecate.grammar.expressions.LiteralExpression;
 import com.babel.hecate.grammar.expressions.LogicalExpression;
+import com.babel.hecate.grammar.expressions.Setter;
 import com.babel.hecate.grammar.expressions.UnaryExpression;
 import com.babel.hecate.grammar.expressions.VariableExpression;
 import com.babel.hecate.grammar.statements.BlockStatement;
@@ -98,6 +99,9 @@ public class Parser {
 
                 Token token = ((VariableExpression)expression).getName();
                 return new AssignmentExpression(right, token);
+            } else if(expression instanceof Getter) {
+                Getter getter = (Getter)expression;
+                return new Setter(getter.getObject(), getter.getName(), right);
             }
 
             throw parserError(equal, "Invalid assignment target");

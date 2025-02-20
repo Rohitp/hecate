@@ -1,13 +1,17 @@
 class Dog {
-
+    a = 10;
 }
 
 var dog = Dog();
 
+
 print Dog;
 print dog;
 
+print
 
+dog.a = "hello";
+print dog.a;
 
 
 
