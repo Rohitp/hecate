@@ -38,7 +38,7 @@ public class HecateObject {
         // a();
         HecateLambda method = HecateClass.functiontrace(name.lexeme);
         if(method != null) {
-            return method;
+            return method.self(this);
         }
 
         // So I considered making this an error as masking object values is a lot more harmful
@@ -54,6 +54,7 @@ public class HecateObject {
     public void set(Token name, Object value) {
         members.put(name.lexeme, value);
     }
+
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.babel.hecate.grammar.expressions;
 
+import com.babel.hecate.prototypes.SelfReference;
 
 // We eventually add a visitor for each expression here. Plus the holder for accepting the visitor
 // Also apparantly expression and statement are taken in java.beans. 
@@ -17,6 +18,7 @@ public abstract class HecateExpression {
         T visit(FunctioncallExpression expression);
         T visit(Getter expression);
         T visit(Setter expression);
+        T visit(SelfReference expression);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);

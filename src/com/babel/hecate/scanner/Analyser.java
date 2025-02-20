@@ -27,6 +27,7 @@ import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.ReturnStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
 import com.babel.hecate.interpreter.Interpreter;
+import com.babel.hecate.prototypes.SelfReference;
 
 
 // For static analysis - the tools are verry similair to an interpretter
@@ -108,9 +109,17 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         declare(statement.getClassname());
         define(statement.getClassname());
 
+
+        // We treat this like a variable, so it can be particular to a specific scope
+        // This was multi level nesting is handled correctly
+        scope();
+        scopes.peek().put("self", true);
+
         for(FunctionStatement fs : statement.getMethods()) {
             staticanalysefunction(fs, FuncEnum.METHOD);
         }
+
+        descope();
         return null;
     }
 
@@ -247,6 +256,16 @@ public class Analyser implements HecateExpression.Visitor<Void>, HecateStatement
         for(HecateExpression arg: expression.getArgs()) {
             staticanalyse(arg);
         }
+        return null;
+    }
+
+
+    // Treat this as a variable
+    // As it's in the same level as a literal with a simple reference 
+    // Only instance of indirection in logic
+    @Override
+    public Void visit(SelfReference expression) {
+        analysescope(expression, expression.getToken());
         return null;
     }
 

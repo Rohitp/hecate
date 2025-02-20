@@ -54,6 +54,8 @@ public class HecatePrototypes implements InterfaceLambda {
         return "HecateClass{" + "name='" + name + '\'' +", parent=" + parent +'}';
     }
 
+
+    // So this needs to check constructor parameters here, as it's the main callable params
     @Override
     public int params() {
         return 0;

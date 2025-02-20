@@ -15,7 +15,7 @@ public enum TokenEnum {
     IF, ELSE, OR, AND, WHILE, FOR, PRINT,
     
     // OOP and abstraction here
-    CLASS, FUNC, THIS, SUPER, RETURN,
+    CLASS, FUNC, THIS, SUPER, RETURN, SELF,
 
     // The two types of use defined words
     IDENTIFIER, KEYWORD,

@@ -32,6 +32,7 @@ import com.babel.hecate.lambdacalculus.InterfaceLambda;
 import com.babel.hecate.lambdacalculus.Return;
 import com.babel.hecate.prototypes.HecateObject;
 import com.babel.hecate.prototypes.HecatePrototypes;
+import com.babel.hecate.prototypes.SelfReference;
 import com.babel.hecate.scanner.Token;
 import com.babel.hecate.scanner.TokenEnum;
 
@@ -230,6 +231,11 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
         return le.getRightExpression().accept(this);
          
+    }
+
+    @Override
+    public Object visit(SelfReference sr) {
+        return findvar(sr.getToken(), sr);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.babel.hecate.grammar.expressions;
 
+import com.babel.hecate.prototypes.SelfReference;
+
 public class PrettyPrint implements HecateExpression.Visitor<String> {
 
     @Override
@@ -47,6 +49,11 @@ public class PrettyPrint implements HecateExpression.Visitor<String> {
     @Override
     public String visit(Setter setter) {
         return "Setting value to "+setter.name.getLexeme();
+    }
+
+    @Override
+    public String visit(SelfReference sr) {
+        return "this";
     }
 
     private String process(String name, HecateExpression ...exprs) {

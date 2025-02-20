@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.babel.hecate.Variables;
 import com.babel.hecate.grammar.statements.FunctionStatement;
 import com.babel.hecate.interpreter.Interpreter;
+import com.babel.hecate.prototypes.HecateObject;
 
 public class HecateLambda  implements InterfaceLambda{
 
@@ -21,6 +22,12 @@ public class HecateLambda  implements InterfaceLambda{
 
     public FunctionStatement getDeclaration() {
         return declaration;
+    }
+
+    public HecateLambda self(HecateObject object) {
+        Variables classcope  = new Variables(closure);
+        classcope.declare("self", object);
+        return new HecateLambda(declaration, classcope);
     }
 
     @Override

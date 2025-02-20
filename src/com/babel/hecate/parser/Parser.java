@@ -22,6 +22,7 @@ import com.babel.hecate.grammar.statements.LoopStatement;
 import com.babel.hecate.grammar.statements.PrintStatement;
 import com.babel.hecate.grammar.statements.ReturnStatement;
 import com.babel.hecate.grammar.statements.VariableStatement;
+import com.babel.hecate.prototypes.SelfReference;
 
 import java.util.ArrayList;
 
@@ -250,6 +251,9 @@ public class Parser {
             return new LiteralExpression(tokens.get(ptr -1).getLiteral());
         if(match(TokenEnum.IDENTIFIER))
             return new VariableExpression(tokens.get(ptr -1));
+        if(match(TokenEnum.SELF)) {
+            return new SelfReference(tokens.get(ptr -1));
+        }
 
 
         // Parse and match griup expressions    

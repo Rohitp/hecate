@@ -1,10 +1,23 @@
 class Dog {
-    bark() {
-        print "bark";
+
+    num() {
+        print self.number;
+    }
+
+    bark(time) {
+        print self.name+" is barking at "+time;
     }
 }
 
-Dog().bark();
+
+var d = Dog();
+d.name = "maple";
+d.number = 100;
+d.bark("night");
+d.num();
+
+
+//Dog().bark();
 
 
 
