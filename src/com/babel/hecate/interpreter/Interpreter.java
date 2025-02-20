@@ -384,6 +384,30 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
         // Here 
         variables.declare(cs.getClassname().getLexeme(), null);
 
+
+        // This essentially supports static methods
+        // By binding these to the class defenition and not the object
+        // We have methods work, unless they hit a snag and need variables that are refered
+        // class Dog {
+        //     bark() {
+        //         print "woof";
+        //     }
+        //     call(name) {
+        //         print "come "+name;
+        //     }
+        //     feed() {
+        //         print "feeding "+this.food;
+        //     }
+        // }
+        // Dog().bark(); -> woof -> works as static 
+        // Dog().call("Rover"); -> come Rover -> works as static
+        // Dog().feed(); -> runtimeError
+        //
+        // Since it refers a method, we need 
+        // var animal = Dog();
+        //
+        // animal.food = "bone";
+        // animal.feed(); -> feeding bone -> works as instance method
         HashMap<String, HecateLambda> methods = new HashMap<>();
         for(FunctionStatement fs : cs.getMethods()) {
             HecateLambda lambda = new HecateLambda(fs, variables);

@@ -18,7 +18,7 @@ public class HecateObject {
     private HecatePrototypes HecateClass;
 
     // Members are initialised only in an instance.
-    // As in all things here we're following the pythonic defenition
+    // As in all things here we're following the javascript defenition
     private final HashMap<String, Object> members = new HashMap<>();
 
     public HecateObject(HecatePrototypes HecateClass) {
