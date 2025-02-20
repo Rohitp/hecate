@@ -377,7 +377,13 @@ public class Interpreter implements HecateExpression.Visitor<Object>, HecateStat
 
         // Here 
         variables.declare(cs.getClassname().getLexeme(), null);
-        HecatePrototypes prototype = new HecatePrototypes(cs.getClassname().lexeme, null);
+
+        HashMap<String, HecateLambda> methods = new HashMap<>();
+        for(FunctionStatement fs : cs.getMethods()) {
+            HecateLambda lambda = new HecateLambda(fs, variables);
+            methods.put(fs.getFunc().getLexeme(), lambda);
+        }
+        HecatePrototypes prototype = new HecatePrototypes(cs.getClassname().lexeme,null, methods);
         // This weird quirk is needed so that the class can refer to itself
         // https://stackoverflow.com/questions/336859/var-functionname-function-vs-function-functionname
         variables.assign(cs.getClassname(), prototype);

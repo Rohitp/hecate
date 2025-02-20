@@ -1,17 +1,10 @@
 class Dog {
-    a = 10;
+    bark() {
+        print "bark";
+    }
 }
 
-var dog = Dog();
-
-
-print Dog;
-print dog;
-
-print
-
-dog.a = "hello";
-print dog.a;
+Dog().bark();
 
 
 
