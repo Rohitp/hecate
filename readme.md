@@ -16,7 +16,7 @@ The full language and syntax of the language is too much effort to write down, b
 
 An example that usea a lot of features of the language
 
-`func fib(n) {
+```func fib(n) {
     if(n <= 2) {
         return 1;
     }
@@ -40,7 +40,7 @@ d.name = "Hector";
 d.printname();
 // Prints the 5th fibonacci number
 print "This function is recursive as well. Neat, right!";
-print fib(5);`
+print fib(5);```
 
 The program shows you how classes, variables, functions, scopes and recursion works.
 
