@@ -10,7 +10,9 @@ There are quirks and idiosynchronacies. On purpose (Null is Nietzsche, Variables
 
 You can use the shell scripts, *build_and_run.sh* and _run.sh_ to execute. You need to pass a text file containing source code as a parameter.
 
-The full language and syntax of the language is too much effort to write down, but I will update this read me, eventually. probably. But check the sample programs in tests to get an understanding till then.
+The full language and syntax of the language is too much effort to write down, but I will update this read me, eventually. Probably. But check the sample programs in tests to get an understanding till then.
+
+An example that usea a lot of features of the language
 
 
 
